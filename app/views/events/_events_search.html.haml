@@ -1,0 +1,19 @@
+.ui.grid.segment.piled
+  .ui.four.wide.column.center.aligned
+    .ui.dropdown
+      .text Choose City
+      %i.dropdown.icon
+      .menu
+        - City.all.each do |city|
+          .item= city.name
+  .ui.four.wide.column.center.aligned
+    .input
+      = date_select :date, ''
+  .ui.four.wide.column.center.aligned
+    .ui.dropdown
+      .text Choose Event Type
+      %i.dropdown.icon
+      - EventType.all.each do |type|
+        .item= type.name
+  .ui.four.wide.column.center.aligned
+    %button.ui.button.teal.mini Search

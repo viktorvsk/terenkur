@@ -1,21 +1,17 @@
-%h1 Listing users
-
-%table
-  %thead
-    %tr
-      %th Name
-      %th
-      %th
-      %th
-      
-  %tbody
-    - @users.each do |user|
-      %tr
-        %td= user.name
-        %td= link_to 'Show', user
-        %td= link_to 'Edit', edit_user_path(user)
-        %td= link_to 'Destroy', user, :method => :delete, :data => { :confirm => 'Are you sure?' }
-
-%br
-
-= link_to 'New User', new_user_path
+%h1.header Users
+.ui.grid
+  - @users.each do |user|
+    .ui.column.six.wide
+      .ui.segment
+        .ui.grid
+          .ui.column.four.wide
+            .ui.tiny.image
+              = link_to image_tag(user.avatar), user_path(user)
+          .ui.column.twelve.wide
+            = link_to user.name, user_path(user)
+            %br/
+            Разместил событий:
+            = user.events.count
+            %br/
+            Зарегистрировался:
+            = user.created_at

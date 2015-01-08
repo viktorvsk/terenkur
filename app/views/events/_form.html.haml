@@ -1,19 +1,32 @@
-= form_for @event do |f|
-  - if @event.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@event.errors.count, "error")} prohibited this event from being saved:"
-      %ul
-        - @event.errors.full_messages.each do |msg|
-          %li= msg
+.ui.grid
+  .ui.column
+    .ui.segment.form
+      = form_for @event do |f|
+        - if @event.errors.any?
+          #error_explanation
+            %h2= "#{pluralize(@event.errors.count, "error")} prohibited this event from being saved:"
+            %ul
+              - @event.errors.full_messages.each do |msg|
+                %li= msg
 
-  .field
-    = f.label :name
-    = f.text_field :name
-  .field
-    = f.label :user
-    = f.text_field :user
-  .field
-    = f.label :event_description
-    = f.text_field :event_description
-  .actions
-    = f.submit 'Save'
+        .field
+          = f.label :name
+          = f.text_field :name, class: 'input'
+        .field
+          = f.label :teaser
+          = f.text_area :teaser, class: 'input'
+        .field
+          = f.label :description
+          = f.text_area :description, class: 'input', name: 'event[event_description_attributes][content][main]'
+        .field
+          = f.label :time
+          = f.text_field :time, class: 'input', name: 'event[event_description_attributes][content][time]'
+        .field
+          = f.label :images
+          = render 'images', f: f
+        - if @event.persisted? and @event.advanced_descr.present?
+          .field
+            = f.label :advanced_description
+            = render 'advanced_description', event: @event
+        .ui.column.right.aligned
+          = f.submit (@event.persisted? ? 'Update Event' : 'Add Event'), class: 'ui button teal'

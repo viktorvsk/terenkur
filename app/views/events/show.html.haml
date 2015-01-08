@@ -1,15 +1,15 @@
-%p#notice= notice
+%h1.header= @event.name
 
-%p
-  %b Name:
-  = @event.name
-%p
-  %b User:
-  = @event.user
-%p
-  %b Event description:
-  = @event.event_description
-
-= link_to 'Edit', edit_event_path(@event)
-\|
-= link_to 'Back', events_path
+.ui.segment
+  .ui.grid
+    .ui.column.eight.wide
+      .ui.grid.padded
+        .ui.image= image_tag(@event.preview)
+        - @event.images.each do |image|
+          .ui.four.wide.column
+            .ui.image= image_tag(image)
+    .ui.column.eight.wide
+      %article.event-description
+        = @event.description
+        - @event.advanced_descr.each do |k,v|
+          %p= "<b>#{k}</b>: #{v}".html_safe

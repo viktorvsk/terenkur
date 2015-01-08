@@ -12,5 +12,20 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require_tree .
+
+
+$(document).ready(function(){
+  $('.dropdown').dropdown({ transition: 'drop'});
+
+  $('.message .close').on('click', function() {
+    $(this).closest('.message').fadeOut();
+  });
+
+  $('.image-adder').click(function(e){
+    var imagesCount = $('#images-uploader .img').size();
+    var node = '<div class="ui column four wide img"><div class="ui segment"><input type="checkbox" name="event[images_attributes]['+ imagesCount +'][_destroy]"/><label>Destroy</label><input id="event_images_attributes_'+ imagesCount +'_attachment" name="event[images_attributes]['+ imagesCount +'][attachment]" type="file"></div></div>';
+    $('#images-uploader > .ui.grid').append(node);
+    e.preventDefault();
+  });
+});

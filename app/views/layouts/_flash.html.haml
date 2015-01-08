@@ -1,0 +1,20 @@
+.ui.grid.page
+  .ui.column.six.wide
+  .ui.column.four.wide
+    - if flash[:error]
+      .ui.negative.floating.message
+        %i.close.icon
+        .header Error
+        %p= flash[:error]
+
+    - if flash[:notice]
+      .ui.positive.floating.message
+        %i.close.icon
+        .header Note
+        %p= flash[:notice]
+
+    - if flash[:alert]
+      .ui.warning.floating.message
+        %i.close.icon
+        .header Warning
+        %p= flash[:alert]

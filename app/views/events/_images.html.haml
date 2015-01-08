@@ -1,0 +1,23 @@
+#images-uploader
+  - if f.object.new_record?
+    = f.fields_for :images, f.object.images.build do |builder|
+      = builder.file_field :attachment, multiple: true
+  - else
+    .ui.grid
+      = f.fields_for :images do |builder|
+        .ui.column.four.wide.img
+          .ui.segment
+            = builder.check_box :_destroy
+            = builder.label :destroy
+            %br/
+            .ui.tiny.image
+              = image_tag(builder.object.attachment)
+            %br/
+            %br/
+            = builder.file_field :attachment
+
+%br/
+.ui.column
+  %button.ui.mini.button.blue.image-adder
+    %i.plus.icon
+    Add Image
