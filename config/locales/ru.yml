@@ -1,0 +1,23 @@
+ru:
+  menu:
+    root: Теренкур
+    events: События
+    users: Пользователи
+    add_event: Добавить событие
+    logout: Выйти
+    login: Войти
+    sign_up: Зарегистрироваться
+    admin: Админ
+  search_bar:
+    city: Выберите город
+    type: Выберите тип события
+    submit: Найти
+  events:
+    h1:
+      index: Все события
+      new: Новое событие
+      edit: Редактировать событие
+  users:
+    h1:
+      index: Все пользователи
+      edit: Профиль
