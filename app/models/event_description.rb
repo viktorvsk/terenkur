@@ -1,4 +1,8 @@
 class EventDescription < ActiveRecord::Base
+  before_create :sanitize_content
   belongs_to :event
-  serialize :content, Hash
+
+  private
+  def sanitize_content
+  end
 end

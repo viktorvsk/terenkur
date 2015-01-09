@@ -6,8 +6,9 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
+         :recoverable, :rememberable, :validatable,
          :omniauthable, :omniauth_providers => [:vkontakte]
+  accepts_nested_attributes_for :avatar
 
   def self.from_omniauth(auth)
 
@@ -22,10 +23,19 @@ class User < ActiveRecord::Base
 
       image_model     = Image.create!(attachment: temp)
       user.email      = auth.info.email || "#{auth.provider}_#{auth.uid}@#{auth.provider}.com"
-      user.password   = Devise.friendly_token[0,20]
       user.name       = auth.info.name
       user.avatar     = image_model
     end
+
+
+  end
+
+  def password_required?
+    provider.present? ? false : super
+  end
+
+  def avatar_preview(type=nil)
+    avatar ? avatar.attachment.url(type) : 'user-placeholder.png'
   end
 
 end
