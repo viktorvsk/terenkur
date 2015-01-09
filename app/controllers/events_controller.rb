@@ -50,16 +50,12 @@ class EventsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_event
-      @event = Event.find(params[:id])
+      @event = Event.find_by_permalink(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
     def event_params
       all = params[:event][:event_description_attributes][:content].keys
-      params.require(:event).permit(:name, :teaser, images_attributes:
-                                              [:id, :attachment, :_destroy],
-                                          event_description_attributes:
-                                            [:id,
-                                              :content => all])
+      params.require(:event).permit(:name, :teaser, images_attributes: [:id, :attachment, :_destroy], event_description_attributes: [:id, :content])
     end
 end

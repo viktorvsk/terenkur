@@ -5,5 +5,6 @@ Rails.application.routes.draw do
   resources :users, except: [:create, :new]
   resources :events
 
+  ActiveAdmin.routes(self)
 
 end
