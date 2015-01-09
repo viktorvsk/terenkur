@@ -1,8 +1,8 @@
 class CreateEventTypes < ActiveRecord::Migration
   def change
     create_table :event_types do |t|
-      t.string :name
-      t.string :permalink
+      t.string :name, null: false, default: ""
+      t.string :permalink, null: false, default: ""
       t.timestamps
     end
 

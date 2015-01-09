@@ -1,11 +1,10 @@
 class CreateCities < ActiveRecord::Migration
   def change
     create_table :cities do |t|
-      t.string :name
-      t.string :permalink
-      t.string :header
-      t.string :permalink
-      t.text :description
+      t.string :name, null: false, default: ""
+      t.string :permalink, null: false, default: ""
+      t.string :header, default: ""
+      t.text :description, default: ""
 
       t.timestamps
     end
