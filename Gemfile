@@ -6,6 +6,7 @@ gem 'omniauth'
 gem 'omniauth-vkontakte'
 gem 'omniauth-facebook'
 gem 'cancancan', '~> 1.8'
+gem 'simple_token_authentication', '~> 1.0'
 
 # Classic gems
 gem 'rails', '~> 4.1.8'
