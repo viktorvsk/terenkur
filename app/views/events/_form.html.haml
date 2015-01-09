@@ -16,17 +16,7 @@
           = f.label :teaser
           = f.text_area :teaser, class: 'input'
         .field
-          = f.label :description
-          = f.text_area :description, class: 'input', name: 'event[event_description_attributes][content][main]'
-        .field
-          = f.label :time
-          = f.text_field :time, class: 'input', name: 'event[event_description_attributes][content][time]'
-        .field
           = f.label :images
           = render 'images', f: f
-        - if @event.persisted? and @event.advanced_descr.present?
-          .field
-            = f.label :advanced_description
-            = render 'advanced_description', event: @event
         .ui.column.right.aligned
           = f.submit (@event.persisted? ? 'Update Event' : 'Add Event'), class: 'ui button teal'

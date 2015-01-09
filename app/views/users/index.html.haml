@@ -1,17 +1,4 @@
-%h1.header Users
+%h1.header= t('users.h1.index')
 .ui.grid
-  - @users.each do |user|
-    .ui.column.six.wide
-      .ui.segment
-        .ui.grid
-          .ui.column.four.wide
-            .ui.tiny.image
-              = link_to image_tag(user.avatar), user_path(user)
-          .ui.column.twelve.wide
-            = link_to user.name, user_path(user)
-            %br/
-            Разместил событий:
-            = user.events.count
-            %br/
-            Зарегистрировался:
-            = user.created_at
+  = render @users
+

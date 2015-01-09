@@ -1,4 +1,5 @@
 %h1.header= @event.name
+%h4.header= @event.city.name
 
 .ui.segment
   .ui.grid
@@ -10,6 +11,4 @@
             .ui.image= image_tag(image)
     .ui.column.eight.wide
       %article.event-description
-        = @event.description
-        - @event.advanced_descr.each do |k,v|
-          %p= "<b>#{k}</b>: #{v}".html_safe
+        = @event.content.html_safe

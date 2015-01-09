@@ -1,15 +1,7 @@
 = render 'events_search'
 
 
-%h1.header Listing events
+%h1.header= t('events.h1.index')
 
 .ui.grid
-  - @events.each do |event|
-    .ui.column.four.wide
-      .ui.segment
-        .i.column.right.aligned
-          = link_to raw("<i class='remove circle icon red'></i>"), event_path(event), method: :delete, 'data-confirm' => "Are you sure?" if can?(:manage, event)
-        .ui.image
-          = link_to image_tag(event.preview), event_path(event)
-        %header.header= link_to event.name, event_path(event)
-        %article= event.teaser
+  = render @events

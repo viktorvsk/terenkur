@@ -1,19 +1,20 @@
 .ui.grid.segment.piled
   .ui.four.wide.column.center.aligned
     .ui.dropdown
-      .text Choose City
+      .text= t('search_bar.city')
       %i.dropdown.icon
       .menu
         - City.all.each do |city|
-          .item= city.name
+          .item= "#{city.name} (#{city.events.count})"
+  .ui.four.wide.column.center.aligned
+    .ui.dropdown
+      .text= t('search_bar.type')
+      %i.dropdown.icon
+      .menu
+        - EventType.all.each do |type|
+          .item= "#{type.name} (#{type.events.count})"
   .ui.four.wide.column.center.aligned
     .input
       = date_select :date, ''
   .ui.four.wide.column.center.aligned
-    .ui.dropdown
-      .text Choose Event Type
-      %i.dropdown.icon
-      - EventType.all.each do |type|
-        .item= type.name
-  .ui.four.wide.column.center.aligned
-    %button.ui.button.teal.mini Search
+    %button.ui.button.teal.mini= t('search_bar.submit')
