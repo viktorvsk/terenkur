@@ -19,6 +19,10 @@ class Api::V1::ApiController < ActionController::Base
     render json: { success: 0, error_code: code, error_message: EC[code.to_s][0] }, status: EC[code.to_s][1]
   end
 
+  def success!(message='No message')
+    render json: { success: 1, message: message }, status: 200
+  end
+
   private
   def authenticate!
     error!(1) and return if !( params[:user_email].present? and params[:user_token].present? ) and !( request.headers['X-User-Token'].present? and request.headers['X-User-Email'].present? )
