@@ -28,4 +28,20 @@ $(document).ready(function(){
     $('#images-uploader > .ui.grid').append(node);
     e.preventDefault();
   });
+
+  $('#search-submit').click(function(){
+    var city    = $('#search-city span').data('permalink'),
+        type    = $('#search-type span').data('permalink'),
+        params  = [];
+
+    if( city !== "" && city != null){
+      params.push(city);
+    }
+    if( type !== "" && type != null){
+      params.push(type);
+    }
+    url = '/' + params.join('/');
+    window.location.href = url;
+  });
+
 });

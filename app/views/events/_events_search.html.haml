@@ -1,20 +1,20 @@
 .ui.grid.segment.piled
   .ui.four.wide.column.center.aligned
     .ui.dropdown
-      .text= t('search_bar.city')
+      #search-city.text= t('search_bar.city')
       %i.dropdown.icon
       .menu
         - City.all.each do |city|
-          .item= "#{city.name} (#{city.events.count})"
+          .item= "<span data-permalink='#{city.permalink}'>#{city.name}</span> (#{city.events.count})".html_safe
   .ui.four.wide.column.center.aligned
     .ui.dropdown
-      .text= t('search_bar.type')
+      #search-type.text= t('search_bar.type')
       %i.dropdown.icon
       .menu
         - EventType.all.each do |type|
-          .item= "#{type.name} (#{type.events.count})"
+          .item= "<span data-permalink='#{type.permalink}'>#{type.name}</span> (#{type.events.count})".html_safe
   .ui.four.wide.column.center.aligned
     .input
-      = date_select :date, ''
+      #search-date= date_select :date, ''
   .ui.four.wide.column.center.aligned
-    %button.ui.button.teal.mini= t('search_bar.submit')
+    %button#search-submit.ui.button.teal.mini= t('search_bar.submit')

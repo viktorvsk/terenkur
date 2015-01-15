@@ -21,23 +21,42 @@ class Event < ActiveRecord::Base
     permalink
   end
 
+  def save_from_api!
+    begin
+      save!
+    rescue ActiveRecord::RecordInvalid => e
+      #binding.pry
+    rescue NoMethodError => e
+      #
+    rescue Exception => e
+      #binding.pry
+    end
+
+  end
+
   def event_type=(value)
     et = if value.kind_of?(EventType)
       value
-    elsif t = EventType.where("LOWER(name) = ?", value.downcase).first
+    elsif t = EventType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
       t
-    elsif t = EventMetaType.where("LOWER(name) = ?", value.downcase).first
+    elsif t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
       t.event_type
     end
 
+    et = EventType.all.sample if et.nil?
+
     self[:event_type_id] = et.id
+  end
+
+  def teaser=(value)
+    self[:teaser] = value.present? ? value.truncate(140) : "Описание в обработке..."
   end
 
   def city=(value)
     ct = if value.kind_of?(City)
       value
     else
-      City.find_by_name(value)
+      City.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
     end
     raise ActiveRecord::RecordNotFound if ct.nil?
     self[:city_id] = ct.id
@@ -55,10 +74,14 @@ class Event < ActiveRecord::Base
   def images=(value)
     case value
     when Array
-      value.map{ |image_url| self.images.new(remote_attachment_url: image_url) }
+      value.map{ |image_url| self.image = image_url }
     when String
-      self.images.new(remote_attachment_url: value)
+     self.image = value
     end
+  end
+
+  def image=(v)
+    self.images.new(remote_attachment_url: v)
   end
 
   private
