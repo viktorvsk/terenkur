@@ -6,7 +6,7 @@ module Permalinkable
 
     base.class_eval do
 
-      before_create :compose_permalink
+      before_validation :compose_permalink
 
       private
       def compose_permalink

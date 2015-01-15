@@ -2,3 +2,6 @@
 .ui.grid
   = render @users
 
+.ui.grid
+  .ui.column
+    = paginate @users if @users.respond_to?(:current_page)

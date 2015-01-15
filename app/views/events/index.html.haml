@@ -5,3 +5,7 @@
 
 .ui.grid
   = render @events
+
+.ui.grid
+  .ui.column
+    = paginate @events if @events.respond_to?(:current_page)

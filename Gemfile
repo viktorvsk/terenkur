@@ -11,6 +11,7 @@ gem 'simple_token_authentication', '~> 1.0'
 # Classic gems
 gem 'rails', '~> 4.1.8'
 gem 'pg'
+gem 'activerecord-import', '0.4.0'
 gem 'kaminari'
 
 # avatars and images
@@ -30,6 +31,7 @@ gem 'activeadmin_tinymce'
 gem 'rails_db_dump'
 gem 'momentjs-rails', '~> 2.5.0'
 gem 'high_voltage', '~> 2.2.1'
+# gem 'browser-log', '0.0.2'
 
 gem 'sass-rails', '~> 4.0.3'
 gem 'uglifier', '>= 1.3.0'

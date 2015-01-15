@@ -3,8 +3,9 @@
   .item=link_to t('menu.events'), events_path
   .item=link_to t('menu.users'), users_path
   .item=link_to t('menu.add_event'), new_event_path
-  - if current_user.present?
-    .item=link_to t('menu.admin'), admin_root_path if current_user.admin?
+  - if current_user.try(:admin?)
+    .item=link_to t('menu.admin'), admin_root_path
+  - if current_user
     .item=link_to t('menu.logout'), destroy_user_session_path, method: :delete
   - else
     .item=link_to t('menu.sign_up'), new_user_registration_path

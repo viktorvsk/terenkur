@@ -42,7 +42,7 @@ user.events.create([
       teaser: 'Начало в 8:00, билеты: 25 грн. детский, 50 грн. взрослый. Продолжительность 1 час.',
       city: 'Харьков',
       content: '<h1>Очень интересный детский утренник!</h1>',
-      images: 'http://terenkur.com/system/events/images/000/014/143/original/0Wqx0RXzPqk.jpg?1420153238'
+      image: 'http://terenkur.com/system/events/images/000/014/143/original/0Wqx0RXzPqk.jpg?1420153238'
     },
     {
       name: "Студенческая вечеринка",

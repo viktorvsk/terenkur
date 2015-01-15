@@ -4,7 +4,18 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
-    @events = Event.all
+    @all_events = Event.all
+    @events = @all_events.page(params[:page])
+  end
+
+  def search
+    q = {
+      city_permalink_eq: params[:city],
+      event_type_permalink_eq: params[:type]
+    }
+    @all_events = Event.ransack(q).result
+    @events = @all_events.page(params[:page])
+    render :index
   end
 
   # GET /events/1

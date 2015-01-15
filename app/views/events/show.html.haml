@@ -11,4 +11,4 @@
             .ui.image= image_tag(image)
     .ui.column.eight.wide
       %article.event-description
-        = @event.content.html_safe
+        = @event.content.try(:html_safe)
