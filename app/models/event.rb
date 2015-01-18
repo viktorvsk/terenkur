@@ -4,6 +4,8 @@ class Event < ActiveRecord::Base
   belongs_to :user
   belongs_to :event_type
   belongs_to :city
+  has_many :event_days, dependent: :destroy
+  has_many :days, through: :event_days
   has_one :event_description, dependent: :destroy, autosave: true
   has_many :images, as: :imageable, dependent: :destroy
   validates :name, presence: true, uniqueness: true
@@ -17,6 +19,26 @@ class Event < ActiveRecord::Base
     images.present? ? images.first.attachment.url(type) : 'event-placeholder.png'
   end
 
+  def date=(value)
+    days.destroy_all if persisted?
+    result = Day.parse(value)
+    if result.present? and result != "Invalid date"
+      to_assign = if result.kind_of?(String)
+        Day.where(name: result).first_or_create! # Log
+      else
+        # Log invalid dates
+        result = result.reject{ |d| d == "Invalid date" or not d.present? }
+
+        result.map{ |day| Day.where(name: day).first_or_create! } # Log
+        Day.where(name: result)
+      end
+
+      to_assign = to_assign.where('name >= ?', Date.today.to_s(:db)).order(:name).first(7) if to_assign.count > 7
+
+      days << to_assign # Log
+    end
+  end
+
   def to_param
     permalink
   end
@@ -24,12 +46,13 @@ class Event < ActiveRecord::Base
   def save_from_api!
     begin
       save!
+      EventsWithoutDateLogger.info("Событию '#{self.name}' не присвоены даты.") unless self.days.present?
     rescue ActiveRecord::RecordInvalid => e
-      #binding.pry
+      # Log wrong event
     rescue NoMethodError => e
-      #binding.pry
+      # Log strange
     rescue Exception => e
-      #binding.pry
+      # Log wtf
     end
 
   end
@@ -57,7 +80,6 @@ class Event < ActiveRecord::Base
             events_to_create << event
           end
         end
-
 
         events_to_create.map!(&:save_from_api!)
       end

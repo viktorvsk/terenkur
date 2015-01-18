@@ -8,19 +8,20 @@ class EventsController < ApplicationController
   def index
     @all_events = Event.all
     @events = @all_events.page(params[:page])
-    @cities_selection = City.all.map{ |c| [c.name, c.permalink] }
-    @event_types_selection = EventType.all.map{ |t| [t.name, t.permalink] }
+    @cities_selection = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
+    @event_types_selection = EventType.all.order(:name).map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
   end
 
   def search
     q = {
       city_permalink_eq: params[:city],
-      event_type_permalink_eq: params[:type]
+      event_type_permalink_eq: params[:type],
+      days_name_eq: params[:date]
     }
     @all_events = Event.ransack(q).result
     @events = @all_events.page(params[:page])
-    @cities_selection = City.all.map{ |c| [c.name, c.permalink] }
-    @event_types_selection = EventType.all.map{ |t| [t.name, t.permalink] }
+    @cities_selection = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
+    @event_types_selection = EventType.order(:name).all.map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
     render :index
   end
 

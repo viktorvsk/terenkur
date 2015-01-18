@@ -1,26 +1,11 @@
 class Day < ActiveRecord::Base
-
-
-  def date=(value)
-
-
-    value = case value
-    when /\A201[567][\.\-\/](0?[1-9]|1[012])[\.\-\/](0?[1-9]|[12][0-9]|3[01])\Z/
-      Date.parse(value)
-    else
-      "Wrong"
-    end
-    self[:name] = value.strftime("%F")
-  end
-
-  def date
-    name
-  end
+  validates :name, presence: true, uniqueness: true, format: { with: /\A201[4567][\.\-\/](0?[1-9]|1[012])[\.\-\/](0?[1-9]|[12][0-9]|3[01])\z/ }
+  has_many :event_days
+  has_many :events, through: :event_days
 
   def to_s
     name
   end
-
 
   def self.parse(value)
     value               = value.mb_chars.downcase.strip.to_s
@@ -50,6 +35,11 @@ class Day < ActiveRecord::Base
           value =~ /\Aс (#{day}) (#{monthes}) #{year} по (#{day}) (#{monthes}) #{year}\z/
       date_start  = Date.parse("#{$1} #{mon($2)} #{$5}")
       date_end    = Date.parse("#{$3} #{mon($4)} #{$5}")
+      date_start  = date_start - 1.year if date_start > date_end
+      (date_start..date_end).to_a.map{ |d| d.to_s(:db) }
+    elsif value =~ /\A#{day}#{divider}#{month} - {day}#{divider}#{month}\z/
+      date_start  = Date.parse(value.split(' - ').first)
+      date_end    = Date.parse(value.split(' - ').last)
       date_start  = date_start - 1.year if date_start > date_end
       (date_start..date_end).to_a.map{ |d| d.to_s(:db) }
     elsif value =~ /\A(#{monthes}) (#{day}) [а-я]+? - (#{monthes}) (#{day}) [а-я]+?\z/

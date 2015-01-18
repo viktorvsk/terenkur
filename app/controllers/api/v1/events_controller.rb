@@ -30,7 +30,7 @@ class Api::V1::EventsController < Api::V1::ApiController
   private
   def event_params
     params.require(:events).map do |p|
-     ActionController::Parameters.new(p.to_hash).permit(:teaser, :permalink, :address, :content, :city, :event_type, :name, :image, images: [])
+     ActionController::Parameters.new(p.to_hash).permit(:teaser, :date, :permalink, :address, :content, :city, :event_type, :name, :image, images: [])
     end
   end
 

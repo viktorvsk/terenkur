@@ -1,0 +1,1 @@
+EventsWithoutDateLogger = Logger.new("#{Rails.root}/log/without_dates.log")
