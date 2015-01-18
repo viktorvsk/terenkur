@@ -3,8 +3,9 @@
 
 %h1.header= t('events.h1.index')
 
-.ui.grid
-  = render @events
+.grid
+  .ui.stackable.four.column.grid
+    = render @events
 
 .ui.grid
   .ui.column

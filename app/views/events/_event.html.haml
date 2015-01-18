@@ -1,4 +1,4 @@
-.ui.column.four.wide
+.column
   .ui.segment
     .i.column.right.aligned
       = link_to raw("<i class='remove circle icon red'></i>"), event_path(event), method: :delete, 'data-confirm' => "Are you sure?" if can?(:manage, event)

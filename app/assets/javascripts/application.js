@@ -16,7 +16,6 @@
 
 
 $(document).ready(function(){
-  $('.dropdown').dropdown({ transition: 'drop'});
 
   $('.message .close').on('click', function() {
     $(this).closest('.message').fadeOut();
@@ -30,8 +29,8 @@ $(document).ready(function(){
   });
 
   $('#search-submit').click(function(){
-    var city    = $('#search-city span').data('permalink'),
-        type    = $('#search-type span').data('permalink'),
+    var city    = $('#city').val(),
+        type    = $('#event_type').val(),
         params  = [];
 
     if( city !== "" && city != null){
