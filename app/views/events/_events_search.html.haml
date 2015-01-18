@@ -1,11 +1,11 @@
 .grid
   .ui.stackable.four.column.grid.segment.piled
     .column.center.aligned.field
-      = select_tag :city, options_for_select(@cities_selection, params[:city]), class: 'ui input selection'
+      = select_tag :city, options_for_select(@cities_selection.reverse, params[:city] || nil), class: 'ui input selection'
     .column.center.aligned.field
-      = select_tag :event_type, options_for_select(@event_types_selection, params[:type]), class: 'ui input selection'
+      = select_tag :event_type, options_for_select(@event_types_selection.reverse, params[:type] || nil), class: 'ui input selection'
     .column.center.aligned
       .input
-        #search-date= date_select :date, ''
+        %input#search-date{ value: params[:date] }/
     .column.center.aligned
       %button#search-submit.ui.button.teal.mini= t('search_bar.submit')

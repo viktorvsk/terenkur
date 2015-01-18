@@ -6,6 +6,8 @@
       = link_to image_tag(event.preview), event_path(event)
     %header.header= link_to event.name, event_path(event)
     %p
+      = event.days.map{ |day| I18n.localize(Date.parse(day.name), format: "%d %b") }.join(", ")
+    %p
       В
       = event.city.name
     %article= event.teaser
