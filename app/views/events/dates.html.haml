@@ -1,0 +1,13 @@
+%h1.header= t('events.h1.dates')
+.ui.grid
+  .ui.column.eight.wide
+    .form
+      = form_for Day.new, url: :dates, method: :get do |f|
+        .field
+          = f.label :date
+          = f.text_field :date, class: :input, value: params[:day].try(:fetch, :date)
+        %br/
+        = f.submit t('events.actions.date')
+  .ui.column.eight.wide
+    %pre#date-result.ui.segment
+      = @dates

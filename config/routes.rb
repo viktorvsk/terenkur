@@ -14,6 +14,9 @@ Rails.application.routes.draw do
   root 'events#index'
   resources :users, except: [:create, :new]
   resources :events
+
+  get :dates, to: 'events#dates'
+
   get '/(:city)/(:date)/(:type)', to: 'events#search', constraints: search_constraints
   get '/(:city)/(:type)', to: 'events#search', constraints: search_constraints
   get '/(:city)/(:date)', to: 'events#search', constraints: search_constraints
