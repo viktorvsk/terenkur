@@ -5,7 +5,8 @@ class Api::V1::ApiController < ActionController::Base
     '2' => ['Unauthorized', 401],
     '3' => ['Missing API key', 400],
     '4' => ['Invalid API key', 401],
-    '5' => ['Not authorized', 401]
+    '5' => ['Not authorized', 401],
+    '6' => ['Events and a group of events are present both. Use only one', 400]
   }
 
   acts_as_token_authentication_handler_for User, fallback_to_devise: false

@@ -27,9 +27,48 @@ class Event < ActiveRecord::Base
     rescue ActiveRecord::RecordInvalid => e
       #binding.pry
     rescue NoMethodError => e
-      #
+      #binding.pry
     rescue Exception => e
       #binding.pry
+    end
+
+  end
+
+  def self.create_or_update_from_api(events, owner,  opts={})
+    init_count = opts[:initial_count]
+    if events.present?
+      events_to_create = []
+      updated_events = []
+
+      transaction do
+
+        events.each do |e|
+          if event = Event.where(name: e['name']).first
+            if event.user.admin?
+              event.images.destroy_all
+              updated_events << event if event.update(e) # Log error here
+            else
+              # and log error
+            end
+            next
+          else
+            event = owner.events.new(e)
+            event.event_type = '' unless event.event_type.present?
+            events_to_create << event
+          end
+        end
+
+
+        events_to_create.map!(&:save_from_api!)
+      end
+
+      successfully_created_events = events_to_create.select{ |e| e }.count
+      successfully_updated_events = updated_events.count
+      not_processed_events_count  = init_count - successfully_created_events - successfully_updated_events
+
+      "Из #{init_count} переданных событий #{successfully_created_events} были созданы, #{successfully_updated_events} обновлены. Не обработано #{not_processed_events_count} событий."
+    else
+      "Получено #{initial_events_count} событий. Ни одного не добавлено."
     end
 
   end

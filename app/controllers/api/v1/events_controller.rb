@@ -1,29 +1,29 @@
 class Api::V1::EventsController < Api::V1::ApiController
 
   def create
+    error!(6) and return if params[:groups].present? and params[:events].present?
+    if params[:groups].present?
+      events = []
+      params[:groups].map{ |group| events << group[:events] }
+      params[:events] = events.flatten
+    end
 
     initial_events_count = params[:events].try(:count)
     params[:events] = [params[:events]] if params[:events].kind_of?(Hash)
-    params[:events] = params[:events].uniq{ |e| e['name'] }.reject{ |e| e['name'].in? Event.pluck(:name) }
-
-    if params[:events].present?
-      events = []
-      event_params.each do |e|
-        event = current_user.events.new(e)
-        event.event_type = '' unless event.event_type.present?
-        events << event
+    params[:events].each do |e|
+      if e['image'].present?
+        url   = URI(URI.decode(e['image']))
+        e['image'] = url.host ? URI.encode(url.to_s) : "#{params[:base]}#{URI.encode(url.to_s)}"
+      end
+      if e['images'].present?
+        e['images'].map do |image|
+          url   = URI(URI.decode(image))
+          image = url.host ? URI.encode(url.to_s) : "#{params[:base]}#{URI.encode(url.to_s)}"
+        end
       end
 
-      Event.transaction do
-        events.map!(&:save_from_api!)
-      end
-
-      successfully_created_events = events.select{ |e| e }.count
-
-      message = "From #{initial_events_count} events #{successfully_created_events} were created"
-    else
-      message = "Events key is missing or all the events are aleready added. #{initial_events_count} events were processed"
     end
+    message = Event.create_or_update_from_api(event_params, current_user, initial_count: initial_events_count)
     success!(message)
   end
 

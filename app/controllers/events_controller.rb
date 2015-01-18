@@ -1,12 +1,15 @@
 class EventsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show, :new, :create]
+  before_action :authenticate_user!, except: [:index, :show, :new, :create, :search]
   before_action :set_event, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
+  skip_authorize_resource :only => :search
 
   # GET /events
   def index
     @all_events = Event.all
     @events = @all_events.page(params[:page])
+    @cities_selection = City.all.map{ |c| [c.name, c.permalink] }
+    @event_types_selection = EventType.all.map{ |t| [t.name, t.permalink] }
   end
 
   def search
@@ -16,6 +19,8 @@ class EventsController < ApplicationController
     }
     @all_events = Event.ransack(q).result
     @events = @all_events.page(params[:page])
+    @cities_selection = City.all.map{ |c| [c.name, c.permalink] }
+    @event_types_selection = EventType.all.map{ |t| [t.name, t.permalink] }
     render :index
   end
 
@@ -41,6 +46,20 @@ class EventsController < ApplicationController
       redirect_to @event, notice: 'Event was successfully created.'
     else
       render :new
+    end
+  end
+
+  def dates
+    if params[:day] and params[:day][:date].present?
+      @dates = Day.parse(params[:day][:date])
+      if @dates.kind_of? (Array)
+        @dates.map!{ |d|
+          I18n.localize(Date.parse(d), format: "%d %b")
+        }
+        @dates = @dates.join(", ")
+      else
+        @dates = I18n.localize(Date.parse(@dates), format: "%d %b")
+      end
     end
   end
 
