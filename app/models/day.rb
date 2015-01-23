@@ -1,4 +1,6 @@
 class Day < ActiveRecord::Base
+  scope :actual,  -> { where('name >= ?', Date.today) }
+  scope :today,   -> { where('name = ?', Date.today) }
   validates :name, presence: true, uniqueness: true, format: { with: /\A201[4567][\.\-\/](0?[1-9]|1[012])[\.\-\/](0?[1-9]|[12][0-9]|3[01])\z/ }
   has_many :event_days
   has_many :events, through: :event_days
@@ -37,9 +39,9 @@ class Day < ActiveRecord::Base
       date_end    = Date.parse("#{$3} #{mon($4)} #{$5}")
       date_start  = date_start - 1.year if date_start > date_end
       (date_start..date_end).to_a.map{ |d| d.to_s(:db) }
-    elsif value =~ /\A#{day}#{divider}#{month} - {day}#{divider}#{month}\z/
-      date_start  = Date.parse(value.split(' - ').first)
-      date_end    = Date.parse(value.split(' - ').last)
+    elsif value =~ /\A(#{day}#{divider}#{month}) - (#{day}#{divider}#{month})\z/
+      date_start  = Date.parse("#{$1}")
+      date_end    = Date.parse("#{$2}")
       date_start  = date_start - 1.year if date_start > date_end
       (date_start..date_end).to_a.map{ |d| d.to_s(:db) }
     elsif value =~ /\A(#{monthes}) (#{day}) [а-я]+? - (#{monthes}) (#{day}) [а-я]+?\z/
@@ -88,6 +90,9 @@ class Day < ActiveRecord::Base
       date_start  = Date.today
       date_end    = Date.tomorrow
       (date_start..date_end).to_a.map{ |d| d.to_s(:db) }
+    elsif value =~ /,/
+      vals = value.split(",").reject(&:blank?)
+      vals.map{ |d| parse(d) }.flatten
     else
       "Invalid date"
     end

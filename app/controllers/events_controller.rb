@@ -2,27 +2,26 @@ class EventsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show, :new, :create, :search]
   before_action :set_event, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
-  skip_authorize_resource :only => :search
+  skip_authorize_resource :only => [:search, :new]
 
   # GET /events
   def index
-    @all_events = Event.all
-    @events = @all_events.page(params[:page])
-    @cities_selection = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
-    @event_types_selection = EventType.all.order(:name).map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
+    @event                  = Event.real.actual.order("RANDOM()").first
+    @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
+    @event_types_selection  = EventType.all.order(:name).map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
   end
 
   def search
     q = {
       city_permalink_eq: params[:city],
       event_type_permalink_eq: params[:type],
-      days_name_eq: params[:date]
+      days_name_eq: params[:date],
+      name_cont: params[:name]
     }
-    @all_events = Event.ransack(q).result
-    @events = @all_events.page(params[:page])
-    @cities_selection = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
-    @event_types_selection = EventType.order(:name).all.map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
-    render :index
+    @all_events             = Event.real.actual.ransack(q).result.order('days.name').to_a.uniq
+    @events                 = Kaminari.paginate_array(@all_events).page(params[:page])
+    @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
+    @event_types_selection  = EventType.order(:name).all.map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
   end
 
   # GET /events/1
@@ -87,7 +86,7 @@ class EventsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def event_params
-      all = params[:event][:event_description_attributes][:content].keys
-      params.require(:event).permit(:name, :teaser, images_attributes: [:id, :attachment, :_destroy], event_description_attributes: [:id, :content])
+      #all = params[:event][:event_description_attributes][:content].keys
+      params.require(:event).permit(:name, :event_type, :city, :date, :content, :teaser, images_attributes: [:id, :_destroy, :attachment])
     end
 end

@@ -1,5 +1,8 @@
 class Event < ActiveRecord::Base
   include Permalinkable
+  scope :real,    -> { joins(:days, :city, :event_type) }
+  scope :today,   -> { where(days: {name: Date.today}) }
+  scope :actual,  -> { where('days.name >= ?',Date.today) }
   after_create :create_event_description_with_content
   belongs_to :user
   belongs_to :event_type
@@ -11,12 +14,20 @@ class Event < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
   validates :user, :teaser, :event_type, presence: true
 
-  delegate :content, to: :event_description
+  delegate :content, to: :event_description, allow_nil: true
   accepts_nested_attributes_for :images, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :event_description
 
   def preview(type=nil)
     images.present? ? images.first.attachment.url(type) : 'event-placeholder.png'
+  end
+
+  def display_content
+    Sanitize.fragment(self.content, Sanitize::Config::BASIC).html_safe
+  end
+
+  def date
+    days.map{ |day| I18n.localize(Date.parse(day.name), format: "%d %b") }.join(', ')
   end
 
   def date=(value)
@@ -33,6 +44,8 @@ class Event < ActiveRecord::Base
         Day.where(name: result)
       end
 
+      to_assign = [to_assign] if to_assign.kind_of?(Day)
+
       to_assign = to_assign.where('name >= ?', Date.today.to_s(:db)).order(:name).first(7) if to_assign.count > 7
 
       days << to_assign # Log
@@ -45,14 +58,14 @@ class Event < ActiveRecord::Base
 
   def save_from_api!
     begin
-      save!
       EventsWithoutDateLogger.info("Событию '#{self.name}' не присвоены даты.") unless self.days.present?
+      save!
     rescue ActiveRecord::RecordInvalid => e
-      # Log wrong event
+      FailedEventsLogger.error("Событие #{self.name} не добавлено. #{e.class}: #{e.message}")
     rescue NoMethodError => e
-      # Log strange
+      FailedEventsLogger.error("Событие #{self.name} не добавлено. #{e.class}: #{e.message}")
     rescue Exception => e
-      # Log wtf
+      FailedEventsLogger.error("Событие #{self.name} не добавлено. #{e.class}: #{e.message}")
     end
 
   end
@@ -104,9 +117,16 @@ class Event < ActiveRecord::Base
       t.event_type
     end
 
-    et = EventType.all.sample if et.nil?
+    et = guess(:event_type) if et.nil?
 
     self[:event_type_id] = et.id
+  end
+
+  def guess(what)
+    case what
+    when :event_type
+      EventType.all.sample
+    end
   end
 
   def teaser=(value)
@@ -116,6 +136,8 @@ class Event < ActiveRecord::Base
   def city=(value)
     ct = if value.kind_of?(City)
       value
+    elsif c = City.find_by_id(value)
+      c
     else
       City.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
     end
