@@ -1,14 +1,24 @@
-%h1.header= @event.name
-%h4.header= @event.city.name
+- content_for :top_background_content do render 'top_background_content', event: @event end
+- content_for :title do @event.name end
 
-.ui.segment
-  .ui.grid
-    .ui.column.eight.wide
-      .ui.grid.padded
-        .ui.image= image_tag(@event.preview)
-        - @event.images.each do |image|
-          .ui.four.wide.column
-            .ui.image= image_tag(image)
-    .ui.column.eight.wide
-      %article.event-description
-        = @event.content.try(:html_safe)
+.row
+  .col-sm-6
+    .panel.panel-primary
+      .panel-heading Описание события
+      .panel-body
+        - if images = @event.images.where.not(id: @event.images.first) and images.present?
+          .col-sm-4
+            - images.each do |image|
+              = image_tag(image, class: 'img-responsive shadow-z-1')
+          .col-sm-8
+            = @event.display_content
+        - else
+          .col-sm-12
+            = @event.display_content
+  .col-sm-6
+    .panel.panel-primary
+      .panel-heading Подробности события
+      .panel-body
+        .col-xs-12
+          Адрес:
+          = @event.address

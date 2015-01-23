@@ -1,14 +1,11 @@
-.ui.column.six.wide
-  .ui.segment
-    .ui.grid
-      .ui.column.four.wide
-        .ui.tiny.image
-          = link_to image_tag(user.avatar_preview), user_path(user)
-      .ui.column.twelve.wide
-        = link_to user.name, user_path(user)
-        %br/
-        Разместил событий:
-        = user.events.count
-        %br/
-        Зарегистрировался:
-        = user.created_at
+.col-sm-6.col-md-4.event-item-container
+  .jumbotron.col-xs-12
+    .col-sm-4= link_to image_tag(user.avatar_preview, class: 'img-responsive'), user_path(user)
+    .col-sm-8
+      = link_to user.name, user_path(user)
+      %br/
+      Разместил событий:
+      = user.events.count
+      %br/
+      Зарегистрировался:
+      = user.created_at

@@ -1,7 +1,8 @@
+- content_for :top_background_content do render 'top_background_content' end unless current_user
+- content_for :title do "Все участники" end
 %h1.header= t('users.h1.index')
-.ui.grid
+.row
   = render @users
 
-.ui.grid
-  .ui.column
-    = paginate @users if @users.respond_to?(:current_page)
+.col-xs-12.text-center
+  = paginate @users if @users.respond_to?(:current_page)

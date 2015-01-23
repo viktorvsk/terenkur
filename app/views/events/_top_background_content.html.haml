@@ -1,0 +1,12 @@
+.row
+  .col-xs-12
+    .col-sm-2= image_tag @event.preview, class: 'img-responsive shadow-z-2'
+    .col-xs-10
+      = render 'event_controls', event: @event if can?(:manage, @event)
+      = render event.days.actual
+      %h3= event.name
+      %h5
+        = event.event_type.name
+        в
+        = t("cities.#{event.city.permalink}.gen")
+      %button.btn.btn-info.btn-xs Участвовать

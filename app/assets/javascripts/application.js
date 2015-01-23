@@ -12,11 +12,16 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require ckeditor/init
 //= require picker
 //= require_tree .
 
 
 $(document).ready(function(){
+
+
+  $('.dropdown-toggle').dropdown()
+  $('#top-nav li a[href="'+ window.location.pathname +'"]').parent().addClass('active')
 
   $('.message .close').on('click', function() {
     $(this).closest('.message').fadeOut();
@@ -35,9 +40,13 @@ $(document).ready(function(){
   });
 
   $('.image-adder').click(function(e){
-    var imagesCount = $('#images-uploader .img').size();
-    var node = '<div class="ui column four wide img"><div class="ui segment"><input type="checkbox" name="event[images_attributes]['+ imagesCount +'][_destroy]"/><label>Destroy</label><input id="event_images_attributes_'+ imagesCount +'_attachment" name="event[images_attributes]['+ imagesCount +'][attachment]" type="file"></div></div>';
-    $('#images-uploader > .ui.grid').append(node);
+    var imagesCount = $('#images-uploader .images .image').size();
+    var node = [
+        '<div class="col-xs-4">',
+          '<input id="event_images_attributes_'+ imagesCount +'_attachment" name="event[images_attributes]['+ imagesCount +'][attachment]" type="file">',
+        '</div>'].join("\n");
+    console.log(node)
+    $('#images-uploader .images').append(node);
     e.preventDefault();
   });
 

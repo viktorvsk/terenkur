@@ -1,20 +1,17 @@
-.ui.grid.page
-  .ui.column.six.wide
-  .ui.column.four.wide
-    - if flash[:error]
-      .ui.negative.floating.message
-        %i.close.icon
-        .header Error
-        %p= flash[:error]
+.container
+  .row
+    .col-xs-12.col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
+      - if flash[:error]
+        .alert.alert-danger.alert-dismissible
+          %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"} ×
+          %p= flash[:error]
 
-    - if flash[:notice]
-      .ui.positive.floating.message
-        %i.close.icon
-        .header Note
-        %p= flash[:notice]
+      - if flash[:notice]
+        .alert.alert-success.alert-dismissible
+          %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"} ×
+          %p= flash[:notice]
 
-    - if flash[:alert]
-      .ui.warning.floating.message
-        %i.close.icon
-        .header Warning
-        %p= flash[:alert]
+      - if flash[:alert]
+        .alert.alert-warning.alert-dismissible
+          %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"} ×
+          %p= flash[:alert]

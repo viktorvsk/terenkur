@@ -1,13 +1,35 @@
-.ui.inverted.menu
-  .item=link_to t('menu.root'), root_path
-  .item=link_to t('menu.events'), events_path
-  .item=link_to t('menu.users'), users_path
-  .item=link_to t('menu.add_event'), new_event_path
-  - if current_user.try(:admin?)
-    .item=link_to t('menu.admin'), admin_root_path
-  - if current_user
-    .item=link_to t('menu.logout'), destroy_user_session_path, method: :delete
-  - else
-    .item=link_to t('menu.sign_up'), new_user_registration_path
-    .item=link_to t('menu.login'), new_user_session_path
-
+%nav#top-nav.navbar.navbar-inverse.shadow-z-2
+  .container-fluid
+    .navbar-header
+      %button.navbar-toggle.collapsed{"data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      =link_to t('menu.root'), root_path, class: 'navbar-brand'
+    #navbar.navbar-collapse.collapse
+      %ul.nav.navbar-nav
+        %li=link_to t('menu.users'), users_path
+        - unless current_user
+          %li=link_to t('menu.add_event'), new_event_path, class: 'label label-warning'
+      - if controller.controller_name == 'events' and controller.action_name == 'search'
+        = form_tag :search, class: "navbar-form navbar-left", method: :get do
+          = text_field_tag :name, params[:name], class: 'form-control', placeholder: "Фильтр по имени"
+      %ul.nav.navbar-nav.navbar-right
+        - if current_user.try(:admin?)
+          %li=link_to t('menu.admin'), admin_root_path
+        - if current_user
+          %li.hidden-xs
+            .dropdown.user-icon.text-center
+              #user-icon-dropdown.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+                = image_tag(current_user.avatar)
+              %ul.dropdown-menu{ 'aria-labelledby' => 'user-icon-dropdown' }
+                %li=link_to t('menu.profile'), edit_user_path(current_user)
+                %li=link_to t('menu.add_event'), new_event_path
+                %li=link_to t('menu.logout'), destroy_user_session_path, method: :delete
+          %li.visible-xs=link_to t('menu.profile'), edit_user_path(current_user)
+          %li.visible-xs=link_to t('menu.add_event'), new_event_path
+          %li.visible-xs=link_to t('menu.logout'), destroy_user_session_path, method: :delete
+        - else
+          %li=link_to t('menu.sign_up'), new_user_registration_path
+          %li=link_to t('menu.login'), new_user_session_path

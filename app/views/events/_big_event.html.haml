@@ -1,0 +1,29 @@
+.jumbotron
+  .row
+    .col-xs-12
+      .col-sm-4.text-center
+        = link_to (image_tag event.preview, class: 'img-responsive shadow-z-2'), event_path(event)
+        = link_to "Участвовать", '#', class: 'btn btn-info'
+        %section.event-details.text-left.row
+          .col-xs-12
+            %b Адрес:
+            = event.address.presence || "уточняется (напишите нам, и мы узнаем адрес и сообщим)"
+          .col-xs-12
+            %b Тип мероприятия:
+            = link_to event.event_type.name, search_path(type: event.event_type.permalink)
+          .col-xs-12
+            %b Город:
+            = link_to event.city.name, search_path(city: event.city.permalink)
+          .col-xs-12
+            %b Разместил:
+            = link_to event.user.name, user_path(event.user)
+          .col-xs-12.text-center
+            = link_to "Похожие события", search_path(city: event.city.permalink, type: event.event_type.permalink), class: 'btn btn-warning'
+      .col-sm-8
+        %section
+          %header
+            .text-right
+              = render event.days.actual
+            %h2= link_to event.name, event_path(event)
+          %section
+            = event.display_content

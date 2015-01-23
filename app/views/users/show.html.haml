@@ -1,9 +1,15 @@
-%p#notice= notice
+- content_for :top_background_content do render 'user_top_bar', user: @user end
+- content_for :title do @user.name end
 
-%p
-  %b Name:
-  = @user.name
-
-= link_to 'Edit', edit_user_path(@user)
-\|
-= link_to 'Back', users_path
+- if @user.events.present?
+  %section
+    %header
+      %h1 Добавленные события
+    .row
+      = render events = @user.events.page(params[:page])
+      %footer
+        .col-xs-12= paginate events
+- else
+  %section
+    %header
+      %h1 Этот участник еще не добавил ни одного события

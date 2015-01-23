@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Теренкур</title>
+  <title>
+    Теренкур
+    <% if content_for?(:title) %>
+      -
+      <%= yield :title %>
+    <% end %>
+  </title>
+  <%= stylesheet_link_tag '//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', media: 'all' %>
+  <%= stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.1/css/material.min.css', media: 'all' %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
-  <%= stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.6.0/semantic.min.css', media: 'all' %>
+  <%#= stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.6.0/semantic.min.css', media: 'all' %>
   <meta name=viewport content="width=device-width, initial-scale=1">
 
 
@@ -12,21 +20,25 @@
 <body>
 
   <%= render 'layouts/top_menu' %>
+
+  <% if content_for? :top_background_content %>
+    <div class='jumbotron top-background-content'>
+      <%= yield :top_background_content %>
+    </div>
+  <% end %>
+
   <%= render 'layouts/flash' %>
 
-  <div class='ui page grid'>
-    <div class='main container'>
-      <div class='ui padded grid full'>
-        <div class='sixteen column row'>
-          <%= yield %>
-        </div>
-      </div>
-    </div>
+  <div class='container'>
+    <%= yield %>
   </div>
+
 
   <%= render 'layouts/footer' %>
 
   <%= javascript_include_tag 'application' %>
-  <%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.6.0/semantic.min.js', media: 'all' %>
+  <%= javascript_include_tag '//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js' %>
+  <%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.1/js/material.min.js' %>
+  <%#= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.6.0/semantic.min.js', media: 'all' %>
 </body>
 </html>

@@ -1,3 +1,53 @@
 // Place all the styles related to the Events controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.datepickr-wrapper{
+  width: 100%;
+}
+#event-search input, #event-search select{
+  text-align: center!important;
+  margin-bottom: 1em;
+  min-height: 34px;
+}
+
+#search-submit{
+  margin-top: 0;
+}
+#event-search{
+  padding: 1em 0;
+}
+
+.event-item{
+  background: #fff!important;
+  margin-top: 1em;
+  padding: 0;
+  img{
+    max-height: 200px;
+    text-align: center;
+    margin: auto;
+  }
+  .event-top-bar{
+    background: #009587;
+
+    vertical-align: middle;
+    color: #fff;
+  }
+  .event-item-body{
+    padding-bottom: 1em;
+  }
+
+}
+
+
+@media (min-width: 320px) and (max-width:979px) {
+  .event-item-container:nth-child(2n+3) { clear: both;}
+}
+
+@media (min-width: 980px) and (max-width:1409px) {
+  .event-item-container:nth-child(3n+4) { clear: both;}
+}
+
+.day{
+  margin-right: 0.5em
+}

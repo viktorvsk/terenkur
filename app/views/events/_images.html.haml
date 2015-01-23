@@ -1,23 +1,16 @@
+- f.object.images.build
 #images-uploader
-  - if f.object.new_record?
-    = f.fields_for :images, f.object.images.build do |builder|
-      = builder.file_field :attachment, multiple: true
-  - else
-    .ui.grid
-      = f.fields_for :images do |builder|
-        .ui.column.four.wide.img
-          .ui.segment
-            = builder.check_box :_destroy
-            = builder.label :destroy
-            %br/
-            .ui.tiny.image
-              = image_tag(builder.object.attachment)
-            %br/
-            %br/
+  .row
+    .col-xs-12.images
+      - if f.object.new_record?
+        .col-xs-4.image
+          = f.fields_for :images do |builder|
+            = builder.file_field :attachment, multiple: true
+      - else
+        = f.fields_for :images do |builder|
+          .col-xs-4.image
+            - if builder.object.attachment.present?
+              = builder.check_box :_destroy
+              = builder.label :destroy
+              = image_tag(builder.object.attachment, class: 'img-responsive')
             = builder.file_field :attachment
-
-%br/
-.ui.column
-  %button.ui.mini.button.blue.image-adder
-    %i.plus.icon
-    Add Image

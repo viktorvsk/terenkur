@@ -1,12 +1,16 @@
-= render 'events_search'
+- content_for :top_background_content do render 'events_search' end
+- content_for :title do "Все события в твоем городе" end
 
-
-%h1.header= t('events.h1.index')
-
-.grid
-  .ui.stackable.four.column.grid
-    = render @events
-
-.ui.grid
-  .ui.column
-    = paginate @events if @events.respond_to?(:current_page)
+%article
+  %header
+    %h1 Добро пожаловать в Теренкур
+  %section
+    .jumbotron
+      %p Мы знаем о всех событиях в твоем городе.
+      %p Не знаешь, куда сходить с девушкой? Спроси у нас.
+      %p Где провести выходные с семьей?
+%article
+  %header
+    %h1 Случайное событие
+  %section
+    = render 'big_event', event: @event

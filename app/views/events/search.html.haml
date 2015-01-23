@@ -1,0 +1,16 @@
+- content_for :top_background_content do render 'events_search' end
+- content_for :title do event_search_title(params) end
+%h1.header= event_search_title(params)
+.row
+  - if @events.present?
+    = render @events
+  - else
+    .col-xs-12
+      %p
+        События не найдены. Попробуйте изменить фильтры:
+        %b= current_filters(params)
+        или
+        = link_to 'добавить свое событие', new_event_path, class: 'btn btn-info'
+- if @events.respond_to?(:current_page)
+  .col-xs-12.text-center
+    = paginate @events
