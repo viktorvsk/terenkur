@@ -1,6 +1,6 @@
 - if page.current?
-  %a.item.active{ href: url, title: t('views.pagination.page.current') + " #{page}" }
-    = page
+  %li.active
+    = content_tag :a, page, remote: remote, rel: (page.next? ? 'next' : (page.prev? ? 'prev' : nil))
 - else
-  %a.item{ href: url, title: t('views.pagination.page.goto') + " #{page}" }
-    = page
+  %li
+    = link_to page, url, remote: remote, rel: (page.next? ? 'next' : (page.prev? ? 'prev' : nil))
