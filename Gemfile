@@ -22,6 +22,8 @@ gem 'carrierwave'
 gem 'russian', '~> 0.6.0'
 gem 'ckeditor'
 gem 'sanitize'
+gem "rails-settings-cached", "0.4.1"
+gem 'acts_as_commentable'
 
 # Admin
 gem 'activeadmin', github: 'activeadmin'
@@ -54,5 +56,6 @@ group :development do
   gem 'rails_view_annotator'
   gem 'pry-rails'
   gem "erb2haml"
+  gem 'quiet_assets'
 end
 

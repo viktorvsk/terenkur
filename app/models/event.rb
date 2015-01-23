@@ -1,4 +1,5 @@
 class Event < ActiveRecord::Base
+  acts_as_commentable
   include Permalinkable
   scope :real,    -> { joins(:days, :city, :event_type) }
   scope :today,   -> { where(days: {name: Date.today}) }

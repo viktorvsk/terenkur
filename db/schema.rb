@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150123151728) do
+ActiveRecord::Schema.define(version: 20150123164306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,12 +32,13 @@ ActiveRecord::Schema.define(version: 20150123151728) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "cities", force: true do |t|
-    t.string   "name",        default: "", null: false
-    t.string   "permalink",   default: "", null: false
-    t.string   "header",      default: ""
-    t.text     "description", default: ""
+    t.string   "name",          default: "", null: false
+    t.string   "permalink",     default: "", null: false
+    t.string   "header",        default: ""
+    t.text     "description",   default: ""
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "vk_public_url"
   end
 
   add_index "cities", ["name"], name: "index_cities_on_name", unique: true, using: :btree
@@ -58,6 +59,21 @@ ActiveRecord::Schema.define(version: 20150123151728) do
 
   add_index "ckeditor_assets", ["assetable_type", "assetable_id"], name: "idx_ckeditor_assetable", using: :btree
   add_index "ckeditor_assets", ["assetable_type", "type", "assetable_id"], name: "idx_ckeditor_assetable_type", using: :btree
+
+  create_table "comments", force: true do |t|
+    t.string   "title",            limit: 50, default: ""
+    t.text     "comment"
+    t.integer  "commentable_id"
+    t.string   "commentable_type"
+    t.integer  "user_id"
+    t.string   "role",                        default: "comments"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "comments", ["commentable_id"], name: "index_comments_on_commentable_id", using: :btree
+  add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "days", force: true do |t|
     t.string   "name",       default: "", null: false
@@ -128,6 +144,13 @@ ActiveRecord::Schema.define(version: 20150123151728) do
     t.datetime "updated_at"
   end
 
+  create_table "orders", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "event_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "users", force: true do |t|
     t.string   "name",                   default: "",    null: false
     t.boolean  "admin",                  default: false, null: false
@@ -141,6 +164,9 @@ ActiveRecord::Schema.define(version: 20150123151728) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.string   "authentication_token"
+    t.integer  "sex"
+    t.date     "birthdate"
+    t.text     "about"
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree

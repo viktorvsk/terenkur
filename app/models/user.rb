@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   require 'open-uri'
+  acts_as_commentable
   acts_as_token_authenticatable
   has_one :avatar, as: :imageable, class_name: Image, dependent: :destroy
   has_many :events, dependent: :destroy
