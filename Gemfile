@@ -20,6 +20,8 @@ gem 'fog', '1.24.0'
 gem 'carrierwave'
 
 gem 'russian', '~> 0.6.0'
+gem 'ckeditor'
+gem 'sanitize'
 
 # Admin
 gem 'activeadmin', github: 'activeadmin'

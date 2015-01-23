@@ -2,12 +2,13 @@ ru:
   menu:
     root: Теренкур
     events: События
-    users: Пользователи
+    users: Участники
     add_event: Добавить событие
     logout: Выйти
     login: Войти
     sign_up: Зарегистрироваться
     admin: Админ
+    profile: Профиль
   search_bar:
     city: Выберите город
     type: Выберите тип события
@@ -21,5 +22,11 @@ ru:
       date: 'Проверить'
   users:
     h1:
-      index: Все пользователи
+      index: Все участники
       edit: Профиль
+  views:
+    pagination:
+      next: 'Дальше'
+      last: 'В конец'
+      previous: 'Назад'
+      first: 'В начало'

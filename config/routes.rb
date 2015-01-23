@@ -10,6 +10,7 @@ end
 
 Rails.application.routes.draw do
 
+  mount Ckeditor::Engine => '/ckeditor'
   devise_for :users, :controllers => { :omniauth_callbacks => "omniauth_callbacks" }
   root 'events#index'
   resources :users, except: [:create, :new]
@@ -17,7 +18,7 @@ Rails.application.routes.draw do
 
   get :dates, to: 'events#dates'
 
-  get '/(:city)/(:date)/(:type)', to: 'events#search', constraints: search_constraints
+  get '/(:city)/(:date)/(:type)', to: 'events#search', constraints: search_constraints, as: :search
   get '/(:city)/(:type)', to: 'events#search', constraints: search_constraints
   get '/(:city)/(:date)', to: 'events#search', constraints: search_constraints
 
