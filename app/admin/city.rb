@@ -1,6 +1,8 @@
 ActiveAdmin.register City do
-  permit_params :name, :permalink
+  permit_params :name, :permalink, :vk_public_url
   actions :all, except: [:show]
+
+  menu priority: 4, label: proc{ t("active_admin.menu.cities") }
 
   index do
     column "Название", :name
@@ -9,14 +11,13 @@ ActiveAdmin.register City do
   end
 
   filter :name, label: "Название"
-  filter :permalink, label: "Домен"
+  filter :permalink, label: "Ссылка"
 
   form do |f|
     f.inputs "Тип события" do
       f.input :name, label: "Название"
+      f.input :vk_public_url, label: "ID паблика Вконтакте"
       f.input :permalink, label: "Ссылка"
-      f.input :header, label: "Заголовок"
-      f.input :description, label: "Описание"
     end
 
     f.actions

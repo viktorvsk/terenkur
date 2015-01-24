@@ -1,24 +1,36 @@
 ActiveAdmin.register User do
-  permit_params :email, :password, :password_confirmation
+  permit_params :email, :password, :password_confirmation, :name, :phone,
+                :about, :birthdate, :admin
+  actions :all, except: [:show]
+  menu priority: 7
 
   index do
-    selectable_column
-    id_column
-    column :email
-    column :current_sign_in_at
-    column :sign_in_count
-    column :created_at
+    column "Информация", :info do |user|
+      [
+        user.name,
+        user.email,
+        user.phone,
+        "Событий: #{user.events.count}",
+        "Заказов: #{user.orders.count}"
+      ].join(', ')
+    end
+    column "Зарегистрировался", :created_at
     actions
   end
 
-  filter :email
-  filter :current_sign_in_at
-  filter :sign_in_count
-  filter :created_at
+  filter :email, label: 'Почта'
+  filter :name, label: 'Имя'
+  filter :phone, label: 'Телефон'
+  filter :created_at, label: 'Регистрация'
 
   form do |f|
     f.inputs "Admin Details" do
       f.input :email
+      f.input :name
+      f.input :phone
+      f.input :about
+      f.input :birthdate
+      f.input :admin
       f.input :password
       f.input :password_confirmation
     end

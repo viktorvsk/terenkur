@@ -1,6 +1,6 @@
 ActiveAdmin.register EventMetaType do
   permit_params :name, :event_type_id
-  menu label: 'Meta Types', parent: 'Event Types'
+  menu label: proc{ t("active_admin.menu.event_meta_type") }, parent: 'Event Types'
   actions :all, except: [:show]
 
   index do
