@@ -1,18 +1,50 @@
-= form_for @user do |f|
-  - if @user.errors.any?
-    #error_explanation.alert.alert-danger
-      %h2= "#{pluralize(@user.errors.count, "error")} prohibited this user from being saved:"
-      %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
-  .form-group
-    = f.label :name
-    = f.text_field :name, class: 'form-control'
-  .form-group
-    = f.label :email
-    = f.email_field :email, class: 'form-control'
-  .form-group
-    = f.label :password
-    = f.password_field :password, class: 'form-control'
-  .actions.text-right
-    = f.submit 'Save', class: 'btn btn-info'
+.row
+  .col-xs-12
+    .jumbotron
+      = form_for user do |f|
+        - if user.errors.any?
+          #error_explanation.alert.alert-danger
+            %h2= "#{pluralize(user.errors.count, "error")} prohibited this user from being saved:"
+            %ul
+              - user.errors.full_messages.each do |msg|
+                %li= msg
+        .row
+          .col-sm-2
+            .form-group
+              = f.label :avatar
+              = image_tag(user.avatar, class: 'img-responsive') if user.avatar.present?
+              = f.file_field :avatar
+          .col-sm-3
+            .form-group
+              = f.label :name
+              = f.text_field :name, class: 'form-control'
+          .col-sm-3
+            .form-group
+              = f.label :email
+              = f.email_field :email, class: 'form-control'
+          .col-sm-3
+            .form-group
+              = f.label :phone
+              = f.phone_field :phone, class: 'form-control'
+        .row
+          .col-sm-4
+            .form-group
+              = f.label :sex
+              = f.select :sex, options_for_select([[t('sex.form.male'),:male],[t('sex.form.female'),:female]], 1), {}, class: 'form-control'
+          .col-sm-4
+            .form-group
+              = f.label :password
+              = f.password_field :password, class: 'form-control'
+          .col-sm-4
+            .form-group
+              = f.label :birthdate
+              %br/
+              = f.date_select :birthdate, { start_year: 1940, end_year: 2008 }
+        .form-group
+          = f.label :about
+          = f.cktext_area :about, class: 'form-control', ckeditor: { :toolbar => 'mini', language: 'ru' }
+
+        .actions.text-right
+          = f.button class: 'btn btn-fab btn-fab-mini btn-info btn-sm' do
+            %i.mdi-navigation-check
+            .ripple-wrapper

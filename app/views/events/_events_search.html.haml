@@ -6,6 +6,11 @@
     .col-xs-12.col-sm-4.col-md-3
       = select_tag :event_type, options_for_select(@event_types_selection.reverse, params[:type] || nil), class: 'col-xs-12 form-control', placeholder: 'Выберите тип'
     .col-xs-12.col-sm-4.col-md-3
-      = date_field :date,  '', placeholder: "Выберите дату", class: 'form-control', id: 'search-date', value: params[:date]
+      .form-control-wrapper
+        = date_field :date,  '', placeholder: "Выберите дату", class: 'form-control empty datepickr', id: 'search-date', value: params[:date]
+        %span.material-input
     .col-xs-12.col-sm-12.col-md-3.text-center
-      %button#search-submit.btn.btn-sm.btn-info= t('search_bar.submit')
+      = link_to '#', class: 'btn btn-fab btn-fab-mini btn-info btn-sm', id: 'search-submit' do
+        %i.mdi-action-search
+        .ripple-wrapper
+      / %button#search-submit.btn.btn-raised.btn-info= t('search_bar.submit')

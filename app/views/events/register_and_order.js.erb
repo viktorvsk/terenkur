@@ -1,0 +1,6 @@
+<% if @user.errors.any? %>
+  $('#register-and-order-error_explanation').addClass('alert alert-danger')
+  $('#register-and-order-error_explanation').html("<%= escape_javascript(@user.errors.to_a.join('<br/>').html_safe) %>")
+<% else %>
+  window.location.href = "<%= escape_javascript(event_path(@event)) %>"
+<% end %>

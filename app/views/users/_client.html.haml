@@ -1,0 +1,16 @@
+.col-sm-6.col-md-4.event-item-container
+  .jumbotron.col-xs-12
+    .col-sm-4= link_to image_tag(user.avatar_preview, class: 'img-responsive'), user_path(user)
+    .col-sm-8
+      = link_to user.name, user_path(user)
+      %br/
+      - [user.birthdate, user.email, user.phone].compact.each do |attribute|
+        = attribute
+        %br/
+
+    %hr.col-xs-12/
+    .col-xs-12
+      %h4 Оставил заявку на:
+      - user.events_of(current_user).each do |event|
+        = link_to event.name, event_path(event)
+        %br/

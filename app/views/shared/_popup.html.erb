@@ -1,0 +1,29 @@
+<script>
+$(document).ready(function(){
+  var lsTIMER = <%= Conf['popup.timer'] %>;
+  var version = <%= Conf['popup.version'] %>;
+  var lsINVITE = 'popup' + version;
+  for(var i = 0; i < version; i++){
+    localStorage.removeItem('popup'+i);
+  }
+
+  if( localStorage.getItem(lsINVITE) === null )
+  {
+    localStorage.setItem(lsINVITE, 1);
+  }
+  if( parseInt(localStorage.getItem(lsINVITE)) < lsTIMER )
+  {
+    setInterval(function(){
+      if( parseInt(localStorage.getItem(lsINVITE)) < lsTIMER )
+      {
+        localStorage.setItem(lsINVITE, parseInt(localStorage.getItem(lsINVITE)) + 1)
+      }
+       if( parseInt(localStorage.getItem(lsINVITE)) == lsTIMER ){
+         $('#timer').modal('show');
+         localStorage.setItem(lsINVITE, parseInt(localStorage.getItem(lsINVITE)) + 1)
+       }
+
+    }, 1000);
+  }
+})
+</script>

@@ -6,15 +6,18 @@
         %span.icon-bar
         %span.icon-bar
         %span.icon-bar
-      =link_to t('menu.root'), root_path, class: 'navbar-brand'
+      =link_to image_tag('logo.png', class: 'logo'), root_path
     #navbar.navbar-collapse.collapse
       %ul.nav.navbar-nav
         %li=link_to t('menu.users'), users_path
+
         - unless current_user
           %li=link_to t('menu.add_event'), new_event_path, class: 'label label-warning'
       - if controller.controller_name == 'events' and controller.action_name == 'search'
         = form_tag :search, class: "navbar-form navbar-left", method: :get do
-          = text_field_tag :name, params[:name], class: 'form-control', placeholder: "Фильтр по имени"
+          .form-control-wrapper
+            = text_field_tag :name, params[:name], class: 'form-control empty', placeholder: "Фильтр по имени"
+            %span.material-input
       %ul.nav.navbar-nav.navbar-right
         - if current_user.try(:admin?)
           %li=link_to t('menu.admin'), admin_root_path
@@ -22,12 +25,31 @@
           %li.hidden-xs
             .dropdown.user-icon.text-center
               #user-icon-dropdown.dropdown-toggle{ 'data-toggle' => 'dropdown' }
-                = image_tag(current_user.avatar)
+                = image_tag(current_user.avatar.presence || current_user.avatar_preview)
               %ul.dropdown-menu{ 'aria-labelledby' => 'user-icon-dropdown' }
-                %li=link_to t('menu.profile'), edit_user_path(current_user)
-                %li=link_to t('menu.add_event'), new_event_path
-                %li=link_to t('menu.logout'), destroy_user_session_path, method: :delete
+                %li
+                  =link_to user_path(current_user) do
+                    %i.mdi-action-account-circle
+                    = t('menu.profile')
+                %li
+                  =link_to orders_user_path(current_user) do
+                    %i.mdi-action-account-child
+                    = t('menu.clients')
+                %li
+                  =link_to edit_user_path(current_user) do
+                    %i.mdi-image-edit
+                    = t('menu.edit_profile')
+                %li
+                  =link_to new_event_path do
+                    %i.mdi-image-control-point
+                    = t('menu.add_event')
+                %li
+                  =link_to destroy_user_session_path, method: :delete do
+                    %i.mdi-maps-directions-walk
+                    = t('menu.logout')
           %li.visible-xs=link_to t('menu.profile'), edit_user_path(current_user)
+          %li.visible-xs=link_to t('menu.clients'), orders_user_path(current_user)
+          %li.visible-xs=link_to t('menu.edit_profile'), edit_user_path(current_user)
           %li.visible-xs=link_to t('menu.add_event'), new_event_path
           %li.visible-xs=link_to t('menu.logout'), destroy_user_session_path, method: :delete
         - else

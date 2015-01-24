@@ -1,4 +1,19 @@
 .row
-  .col-sm-3.col-md-2= image_tag user.avatar, class: 'img-responsive shadow-z-2'
+  .col-sm-3.col-md-2
+    - if user.avatar.present?
+      = image_tag user.avatar, class: 'img-responsive shadow-z-2'
+    - else
+      = image_tag user.avatar_preview, class: 'img-responsive shadow-z-2'
   .col-sm-9.col-md-10
     %h2= user.name
+    - if user.birthdate and Date.valid_date?(*user.birthdate.to_s(:db).split('-').map(&:to_i))
+      = t("sex.birth.#{user.sex}")
+      = I18n.localize(user.birthdate, format: "%d %B %Y года")
+    %br/
+    = t("sex.added.#{user.sex}")
+    = user.events.count
+    событий
+    %br/
+    Участвовал в
+    = user.orders.count
+    событиях

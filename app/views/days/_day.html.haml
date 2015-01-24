@@ -1,13 +1,15 @@
-%span.day
-  - if Date.parse(day.name) == Date.today
-    %span.label.label-danger
-      %span.mdi-action-event
-      Сегодня
-  - elsif Date.parse(day.name) == Date.tomorrow
-    %span.label.label-warning
-      %span.mdi-action-event
-      Завтра
-  - else
-    %span.label.label-info
-      %span.mdi-action-event
-      = I18n.localize(Date.parse(day.name), format: "%d %b")
+= link_to search_path(date: day.name, city: city.permalink) do
+  %span.day
+    - if Date.parse(day.name) == Date.today
+      %span.label.label-danger
+        %span.mdi-action-event
+        Сегодня
+    - elsif Date.parse(day.name) == Date.tomorrow
+
+      %span.label.label-warning
+        %span.mdi-action-event
+          Завтра
+    - else
+      %span.label.label-info
+        %span.mdi-action-event
+        = I18n.localize(Date.parse(day.name), format: "%e %b")

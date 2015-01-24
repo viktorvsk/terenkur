@@ -1,0 +1,11 @@
+<!-- VK Widget -->
+<%= javascript_include_tag '//vk.com/js/api/openapi.js?115' %>
+<script type="text/javascript">
+  var w = $('#footer-vk').width(), h = 200;
+  VK.Widgets.Group("vk_groups", {mode: 0, width: w, height: h, color1: 'FFFFFF', color2: '2B587A', color3: '5B7FA6'}, <%=  widget_id %>);
+  $(window).on('resize', function(){
+    $('#vk_groups').html("");
+    var w = $('#footer-vk').width(), h = 200;
+    VK.Widgets.Group("vk_groups", {mode: 0, width: w, height: h, color1: 'FFFFFF', color2: '2B587A', color3: '5B7FA6'}, <%=  widget_id %>);
+    })
+</script>

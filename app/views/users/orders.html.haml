@@ -1,0 +1,8 @@
+- if @clients.present?
+  .row
+    - @clients.each do |client|
+      = render 'users/client', user: client
+    .text-center.col-xs-12
+      = paginate @clients if @clients.respond_to?(:current_page)
+- else
+  %h2 Никто еще не принял участие в Ваших событиях

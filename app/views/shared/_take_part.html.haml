@@ -1,0 +1,14 @@
+- if current_user
+  - unless event.user == current_user
+    = link_to 'Участвовать', order_event_path(event), class: 'btn btn-info', method: :post
+    %br/
+    - if orders = current_user.orders.where(event: event).presence
+      - day = Day.where(name: orders.order(:created_at).first.created_at.to_s(:db)).first_or_create
+      %small
+        %i
+          Вы участвовали в этом событии
+          = orders.count
+          раз. Последний раз
+          = render day, city: event.city if day
+- else
+  = link_to 'Участвовать', '#take_part', class: 'btn btn-info register-and-order', 'data-event' => event.id

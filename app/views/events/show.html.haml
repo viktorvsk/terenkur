@@ -6,15 +6,8 @@
     .panel.panel-primary
       .panel-heading Описание события
       .panel-body
-        - if images = @event.images.where.not(id: @event.images.first) and images.present?
-          .col-sm-4
-            - images.each do |image|
-              = image_tag(image, class: 'img-responsive shadow-z-1')
-          .col-sm-8
-            = @event.display_content
-        - else
-          .col-sm-12
-            = @event.display_content
+        .col-sm-12
+          = @event.display_content
   .col-sm-6
     .panel.panel-primary
       .panel-heading Подробности события
@@ -22,3 +15,21 @@
         .col-xs-12
           Адрес:
           = @event.address
+  .col-sm-12
+    .panel.panel-primary
+      .panel-heading Комментарии
+      .panel-body
+        .col-xs-12
+          - if @event.comments.present?
+            = render(@event.comments)
+          - else
+            Никто еще не прокомментировал это мероприятие...
+            %hr/
+        .col-xs-12
+          - if current_user
+            = render 'comments/new'
+          - else
+            = link_to "Зайдите", new_user_session_path, class: 'btn btn-info'
+            или
+            = link_to "Зарегистрируйтесь", new_user_session_path, class: 'btn btn-warning btn-raised'
+            что бы прокомментировать это мероприятие

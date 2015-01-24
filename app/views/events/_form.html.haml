@@ -28,10 +28,15 @@
           = f.text_area :teaser, class: 'form-control'
         .form-group
           = f.label :content
-          = f.cktext_area :content, class: 'form-control', :ckeditor => {:uiColor => '#AADC6E', :toolbar => 'mini', language: 'ru'}
+          = f.cktext_area :content, class: 'form-control', :ckeditor => {:toolbar => 'mini', language: 'ru'}
         .form-group
           = f.label :images
+          = link_to '#', class: 'btn btn-fab btn-fab-mini btn-primary btn-sm image-adder' do
+            %i.mdi-content-add
+            .ripple-wrapper
           = render 'images', f: f
         .text-right
-          = link_to 'Add Image', '#', class: 'btn btn-primary image-adder'
-          = f.submit (@event.persisted? ? 'Update Event' : 'Add Event'), class: 'btn btn-info'
+
+          = f.button class: 'btn btn-fab btn-fab-mini btn-info btn-sm' do
+            %i.mdi-navigation-check
+            .ripple-wrapper

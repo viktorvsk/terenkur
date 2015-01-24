@@ -7,12 +7,12 @@
       В
       = t("cities.#{event.city.permalink}.gen")
     .event-item-body.col-xs-12
-      = link_to (image_tag event.preview, class: 'img-responsive shadow-z-2'), event_path(event)
+      = link_to image_tag('/spinner.gif', class: 'img-responsive shadow-z-2 lazy', 'data-original' => event.preview), event_path(event)
       .col-sm-12
         .text-center
           %header
             %h3= link_to event.name, event_path(event)
-          %button.btn.btn-info.btn-xs Участвовать
+          = render 'shared/take_part', event: event
         %article.teaser= event.teaser
         .text-center
-          %small= render event.days.actual
+          %small= render event.days.actual, city: event.city

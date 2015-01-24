@@ -1,15 +1,34 @@
 - content_for :top_background_content do render 'user_top_bar', user: @user end
 - content_for :title do @user.name end
 
+- if @user.display_about.present?
+  %section.panel.panel-info
+    %header.panel-heading Обо мне
+    %section.panel-body= @user.display_about
+
 - if @user.events.present?
-  %section
-    %header
-      %h1 Добавленные события
-    .row
-      = render events = @user.events.page(params[:page])
-      %footer
-        .col-xs-12= paginate events
+  %section.panel.panel-info
+    %header.panel-heading Добавленные события
+    %section.panel-body
+      .row
+        = render @events
+        - if @events.respond_to?(:current_page)
+          %footer.panel-footer.col-xs-12.text-center
+            = paginate @events, param_name: :events_page
 - else
   %section
     %header
       %h1 Этот участник еще не добавил ни одного события
+- if @ordered_events.present?
+  %section.panel.panel-info
+    %header.panel-heading События, в которых принимал участие
+    %section.panel-body
+      .row
+        = render @ordered_events
+        - if @ordered_events.respond_to?(:current_page)
+          %footer.panel-footer.col-xs-12.text-center
+            = paginate @ordered_events, param_name: :ordered_event_page
+- else
+  %section
+    %header
+      %h1 Этот участник еще не приняли участие ни в одном мероприятии

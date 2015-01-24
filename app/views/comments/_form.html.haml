@@ -1,0 +1,5 @@
+= form_for [comment], url: comments_event_path do |f|
+  .form-group
+    = f.text_area :comment, name: 'event[comment][comment]', class: 'form-control'
+  .text-right
+    = f.submit "Отправить", class: "btn btn-info"

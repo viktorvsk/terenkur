@@ -1,12 +1,22 @@
 .row
   .col-xs-12
-    .col-sm-2= image_tag @event.preview, class: 'img-responsive shadow-z-2'
+    .col-sm-2
+      = link_to event.preview, class: 'event-main-image' do
+        = image_tag event.preview(:thumb), class: 'img-responsive shadow-z-2'
     .col-xs-10
-      = render 'event_controls', event: @event if can?(:manage, @event)
-      = render event.days.actual
+      = render 'event_controls', event: event if can?(:manage, event)
+      = render event.days.actual, city: event.city
       %h3= event.name
       %h5
-        = event.event_type.name
-        в
-        = t("cities.#{event.city.permalink}.gen")
-      %button.btn.btn-info.btn-xs Участвовать
+        = link_to event.event_type.name, search_path(type: event.event_type.permalink)
+        = link_to t("cities.#{event.city.permalink}.gen"), search_path(city: event.city.permalink)
+      = link_to "Похожие события", search_path(city: event.city.permalink, type: event.event_type.permalink), class: 'btn btn-default shadow-z-1'
+      = render 'shared/take_part', event: event
+- if @images.present?
+  %hr/
+  %h2 Галерея
+  .row.gallery
+    - @images.each do |image|
+      .col-sm-2.col-xs-6
+        = link_to image, class: 'event-image' do
+          = image_tag(image.attachment.url(:thumb), class: 'img-responsive shadow-z-1')

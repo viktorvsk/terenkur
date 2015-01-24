@@ -7,5 +7,5 @@
       Разместил событий:
       = user.events.count
       %br/
-      Зарегистрировался:
-      = user.created_at
+      Присоединился:
+      = I18n.localize(user.created_at, format: "%e %B, %Y")
