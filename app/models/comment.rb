@@ -13,4 +13,5 @@ class Comment < ActiveRecord::Base
   # NOTE: Comments belong to a user
   belongs_to :event
   belongs_to :user
+  validates :user, presence: true
 end

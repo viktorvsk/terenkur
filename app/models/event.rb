@@ -10,6 +10,7 @@ class Event < ActiveRecord::Base
   belongs_to :city
   has_many :event_days, dependent: :destroy
   has_many :days, through: :event_days
+  has_many :orders, dependent: :destroy
   has_one :event_description, dependent: :destroy, autosave: true
   has_many :images, as: :imageable, dependent: :destroy
   validates :name, presence: true, uniqueness: true
@@ -28,7 +29,7 @@ class Event < ActiveRecord::Base
   end
 
   def date
-    days.map{ |day| I18n.localize(Date.parse(day.name), format: "%d %b") }.join(', ')
+    days.map{ |day| I18n.localize(Date.parse(day.name), format: "%e %b") }.join(', ')
   end
 
   def date=(value)

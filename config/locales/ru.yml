@@ -1,6 +1,44 @@
 ru:
+  conf:
+    popup:
+      title: Заголовок попапа
+      body: Тело попапа
+      version: Версия попапа
+      timer: Время появления попапа
+  active_admin:
+    menu:
+      orders: Заказы
+      cities: Города
+      event_type: Типы
+      event_meta_type: Мета-типы
+      events: События
+      users: Участники
+      conf: Настройки
+
+  site: Теренкур
+  helpers:
+    label:
+      event:
+        name: Заголовок
+        date: Дата
+        event_type: Тип мероприятия
+        city: Город
+        teaser: Короткое описание
+        content: Детальное описание
+        images: Изображения
+  sex:
+    form:
+      male: муж.
+      female: жен.
+    birth:
+      male: Родился
+      female: Родилась
+    added:
+      male: Разместил
+      female: Разместила
   menu:
     root: Теренкур
+    clients: Cоучастники
     events: События
     users: Участники
     add_event: Добавить событие
@@ -8,7 +46,10 @@ ru:
     login: Войти
     sign_up: Зарегистрироваться
     admin: Админ
-    profile: Профиль
+    profile:  Профиль
+    edit_profile: Редактировать профиль
+    about: О проекте
+    partners: Партнерам
   search_bar:
     city: Выберите город
     type: Выберите тип события
@@ -26,7 +67,44 @@ ru:
       edit: Профиль
   views:
     pagination:
-      next: 'Дальше'
-      last: 'В конец'
-      previous: 'Назад'
-      first: 'В начало'
+      next: '→'
+      last: '»'
+      previous: '←'
+      first: '«'
+  activerecord:
+    models:
+      city:
+        one: Город
+        other: Города
+        few: Городов
+        many: Городов
+      event:
+        one: Событие
+        many: Событий
+        other: События
+        few: Событий
+      order:
+        one: Заказ
+        other: Заказы
+        few: Заказы
+        many: Заказов
+      event_type:
+        one: Тип события
+        few: Типы событий
+        other: Типы событий
+        many: Типов событий
+      event_meta_type:
+        one: Мета-тип события
+        few: Метатипы событий
+        other: Мета-типы событий
+        many: Мета-типов событий
+      user:
+        one: Участник
+        few: Участники
+        other: Участники
+        many: Участников
+      conf:
+        one: Настройка
+        few: Настройки
+        many: Настроек
+        other: Настройки

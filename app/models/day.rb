@@ -23,6 +23,7 @@ class Day < ActiveRecord::Base
     monthes   =   %w{января февраля марта апреля мая июня июля августа сентября октября ноября декабря}
     monthes   <<  %w{янв фев мар апр май июн июл авг сен окт ноя дек}
     monthes   <<  %w{янв фев мар апр май июн июл авг сен окт ноя дек}.map{ |m| "#{m}\." }
+    monthes   <<  %w{янв февр марта апр май июн июл авг сен окт нояб дек}.map{ |m| "#{m}\." }
     monthes   <<  %w{январь февраль март апрель май июнь июль август сентябрь октябрь ноябрь декабрь}
     monthes   =   monthes.flatten.join('|')
 
@@ -56,7 +57,8 @@ class Day < ActiveRecord::Base
           value =~ /\A(#{day}) (#{monthes}) (#{year})\z/ or
           value =~ /\A(#{day}) (#{monthes}) (#{year}) г, #{time_optional}\z/
       Date.parse("#{$1} #{mon($2)}").to_s(:db)
-    elsif value =~ /\A(#{day})#{divider}(#{day}) (#{monthes}) #{year} года\z/
+    elsif value =~ /\A(#{day})#{divider}(#{day}) (#{monthes}) #{year} года\z/ or
+          value =~ /\A(#{day})#{divider}(#{day}) (#{monthes})( #{year} года)?\z/
       date_start  = Date.parse("#{$1} #{mon($3)}")
       date_end    = Date.parse("#{$2} #{mon($3)}")
       date_start  = date_start - 1.year if date_start > date_end
@@ -103,9 +105,9 @@ class Day < ActiveRecord::Base
     case value
     when /\A(янв|января|январь|янв\.)\Z/
       "Jan"
-    when /\A(фев|февраля|февраль|фев\.)\Z/
+    when /\A(фев|февраля|февраль|фев\.|февр.)\Z/
       "Feb"
-    when /\A(мар|марта|март|мар\.)\Z/
+    when /\A(мар|марта|март|мар\.|марта.)\Z/
       "Mar"
     when /\A(апр|апреля|апрель|апр\.)\Z/
       "Apr"

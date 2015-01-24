@@ -1,8 +1,23 @@
 ru:
   cities:
-    harkov:
+    kharkov:
       nom: Харьков
       gen: в Харькове
     lvov:
       nom: Львов
       gen: во Львове
+    dnepropetrovsk:
+      nom: Днепропетровск
+      gen: в Днепропетровске
+    kiev:
+      nom: Киев
+      gen: в Киеве
+    odessa:
+      nom: Одесса
+      gen: в Одессе
+    moskva:
+      nom: Москва
+      gen: в Москве
+    sankt-peterburg:
+      nom: Санкт-Петербург
+      gen: в Санкт-Петербурге
