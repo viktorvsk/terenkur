@@ -11,8 +11,14 @@
  * file per style scope.
  *
  *= require_self
+ *= require bootstrap
+ * require material
+ * require ripples
+ *= require material-wfont
  *= require picker
+ *= require magnific-popup
  *= require events
+ *= require users
  */
 
 
@@ -24,6 +30,11 @@ select {
 }
 select::-ms-expand {
     display: none;
+}
+
+.logo{
+  max-height: 48px;
+  margin: 0;
 }
 
 .top-background-content{
@@ -41,3 +52,56 @@ select::-ms-expand {
 #user-icon-dropdown img{
   max-height: 60px;
 }
+
+
+
+
+.flashes{
+  margin-top: 1em;
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.site {
+  display: table;
+  height: 100%;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.site-footer {
+  display: table-row;
+  height: 1px;
+}
+
+@media (min-width: 320px) and (max-width:767px) {
+  body{ overflow: scroll;}
+}
+
+#footer-vk{
+  text-align: center;
+}
+#footer-vk iframe{
+  margin: auto;
+}
+
+#vk_groups,
+#vk_groups iframe {
+     width: 100% !important;
+}
+
+#bottom-menu li{
+  list-style: none;
+  display: inline-block;
+  margin: 0.5em 0.5em 0 0;
+}
+

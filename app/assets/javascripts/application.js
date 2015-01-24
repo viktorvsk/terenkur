@@ -11,62 +11,52 @@
 // about supported directives.
 //
 //= require jquery
+//= require jquery.scrollstop
+//= require jquery.lazyload
 //= require jquery_ujs
 //= require ckeditor/init
 //= require picker
-//= require_tree .
-
+//= require bootstrap.min
+//= require material.min
+//= require ripples
+//= require jquery.magnific-popup
+//= require events
+//= require users
 
 $(document).ready(function(){
-
-
-  $('.dropdown-toggle').dropdown()
+  $.material.init();
+  $('img.lazy').lazyload();
+  $('.dropdown-toggle').dropdown();
   $('#top-nav li a[href="'+ window.location.pathname +'"]').parent().addClass('active')
-
   $('.message .close').on('click', function() {
     $(this).closest('.message').fadeOut();
   });
 
-  datepickr('#search-date');
-
-  datepickr.prototype.l10n.months.shorthand = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-  datepickr.prototype.l10n.months.longhand = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
-  datepickr.prototype.l10n.weekdays.shorthand = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
-  datepickr.prototype.l10n.weekdays.longhand = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье'];
-
-  datepickr('#search-date', {
-    dateFormat: 'Y-m-d',
-    minDate: new Date().getTime() - 1000 * 60 * 60 * 24
+  $('.event-main-image').magnificPopup({
+    type: 'image',
+    closeOnContentClick: true,
+    mainClass: 'mfp-img-mobile',
+    image: {
+      verticalFit: true
+    }
   });
 
-  $('.image-adder').click(function(e){
-    var imagesCount = $('#images-uploader .images .image').size();
-    var node = [
-        '<div class="col-xs-4">',
-          '<input id="event_images_attributes_'+ imagesCount +'_attachment" name="event[images_attributes]['+ imagesCount +'][attachment]" type="file">',
-        '</div>'].join("\n");
-    console.log(node)
-    $('#images-uploader .images').append(node);
-    e.preventDefault();
-  });
-
-  $('#search-submit').click(function(){
-    var city    = $('#city').val(),
-        type    = $('#event_type').val(),
-        date    = $('#search-date').val(),
-        params  = [];
-
-    if( city !== "" && city != null){
-      params.push(city);
+  $('.gallery').magnificPopup({
+    delegate: 'a',
+    type: 'image',
+    tLoading: 'Loading image #%curr%...',
+    mainClass: 'mfp-img-mobile',
+    gallery: {
+      enabled: true,
+      navigateByImgClick: true,
+      preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+    },
+    image: {
+      tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+      titleSrc: function(item) {
+        return item.el.attr('title');
+      }
     }
-    if( date !== "" && date != null){
-      params.push(date);
-    }
-    if( type !== "" && type != null){
-      params.push(type);
-    }
-    url = '/' + params.join('/');
-    window.location.href = url;
   });
 
 });

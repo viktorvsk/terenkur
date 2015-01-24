@@ -5,10 +5,9 @@
 .datepickr-wrapper{
   width: 100%;
 }
-#event-search input, #event-search select{
-  text-align: center!important;
-  margin-bottom: 1em;
-  min-height: 34px;
+input:not(#name), select{
+  margin-bottom: 1em!important;
+  min-height: 22px!important;
 }
 
 #search-submit{
