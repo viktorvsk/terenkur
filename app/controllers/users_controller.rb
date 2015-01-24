@@ -9,6 +9,8 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
+    @events = @user.events.page(params[:events_page])
+    @ordered_events = Event.where(id: @user.orders.pluck(:event_id)).page(params[:ordered_events_page])
   end
 
   # GET /users/new
@@ -46,6 +48,10 @@ class UsersController < ApplicationController
     redirect_to users_url, notice: 'User was successfully destroyed.'
   end
 
+  def orders
+    @clients = current_user.clients.page(params[:page])
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -54,6 +60,6 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:name, :email, :password)
+      params.require(:user).permit(:name, :phone, :email, :password, :sex, :avatar, :birthdate, :about)
     end
 end

@@ -9,12 +9,25 @@ search_constraints = lambda do |request|
 end
 
 Rails.application.routes.draw do
+  get 'about' => 'high_voltage/pages#show', id: 'about'
+  get 'partners' => 'high_voltage/pages#show', id: 'partners'
+
 
   mount Ckeditor::Engine => '/ckeditor'
   devise_for :users, :controllers => { :omniauth_callbacks => "omniauth_callbacks" }
   root 'events#index'
-  resources :users, except: [:create, :new]
-  resources :events
+  post :register_and_order, to: 'events#register_and_order'
+  resources :users, except: [:create, :new] do
+    member do
+      get :orders
+    end
+  end
+  resources :events do
+    member do
+      post :take_part, to: 'events#take_part', as: :order
+      post :comments, to: 'events#create_comment', as: :comments
+    end
+  end
 
   get :dates, to: 'events#dates'
 

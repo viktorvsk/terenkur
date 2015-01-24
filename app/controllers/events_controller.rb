@@ -1,17 +1,19 @@
 class EventsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show, :new, :create, :search]
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!, except: [:index, :show, :create, :search, :register_and_order]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :take_part, :create_comment]
   load_and_authorize_resource
-  skip_authorize_resource :only => [:search, :new]
+  skip_authorize_resource :only => [:search, :register_and_order]
 
   # GET /events
   def index
     @event                  = Event.real.actual.order("RANDOM()").first
+    @city                   = @event.city
     @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
     @event_types_selection  = EventType.all.order(:name).map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
   end
 
   def search
+    @city = City.find_by_permalink(params[:city]) if params[:city]
     q = {
       city_permalink_eq: params[:city],
       event_type_permalink_eq: params[:type],
@@ -26,6 +28,8 @@ class EventsController < ApplicationController
 
   # GET /events/1
   def show
+    @city = @event.city
+    @images = @event.images.where.not(id: @event.images.first)
   end
 
   # GET /events/new
@@ -39,8 +43,7 @@ class EventsController < ApplicationController
 
   # POST /events
   def create
-    user = current_user || User.auto_create(params[:event][:new_user_email])
-    @event = user.events.new(event_params)
+    @event = current_user.events.new(event_params)
 
     if @event.save
       redirect_to @event, notice: 'Event was successfully created.'
@@ -60,6 +63,32 @@ class EventsController < ApplicationController
       else
         @dates = I18n.localize(Date.parse(@dates), format: "%d %b")
       end
+    end
+  end
+
+  def take_part
+    if current_user.orders.create(event: @event)
+      redirect_to event_path(@event), flash: { notice: "Вы успешно подали заявку на участие в #{@event.name}" }
+    else
+      redirect_to event_path(@event), flash: { error: "При оформлении заявки на #{@event.name} произошла ошибка" }
+    end
+  end
+
+  def register_and_order
+    @user = User.new(user_params)
+    if @user.save
+      sign_in @user
+      @event = Event.find(params[:event_id])
+    end
+  end
+
+  def create_comment
+    comment = @event.comments.new(event_params[:comment])
+    comment.user = current_user
+    if comment.save
+      redirect_to :back, flash: { notice: "Ваш комменатрий добавлен." }
+    else
+      redirect_to :back, flash: { error: "Произошла ошибка. Комментарий не сохранен." }
     end
   end
 
@@ -87,6 +116,10 @@ class EventsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def event_params
       #all = params[:event][:event_description_attributes][:content].keys
-      params.require(:event).permit(:name, :event_type, :city, :date, :content, :teaser, images_attributes: [:id, :_destroy, :attachment])
+      params.require(:event).permit(:name, :event_type, :city, :date, :content, :teaser, images_attributes: [:id, :_destroy, :attachment], comment: [:comment])
+    end
+
+    def user_params
+      params.require(:user).permit(:name, :phone, :email, :password, :sex)
     end
 end
