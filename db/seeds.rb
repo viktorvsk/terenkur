@@ -69,3 +69,7 @@ user.events.create!([
     }
   ])
 puts "Create test event"
+Conf['popup.title']   = 'Регистрируйтесь, у нас круто!'
+Conf['popup.body']    = '<h1>Очень</h1>'
+Conf['popup.version'] = 9
+Conf['popup.timer']   = 15

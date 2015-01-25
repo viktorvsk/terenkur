@@ -37,17 +37,9 @@ class User < ActiveRecord::Base
 
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       image_url       = auth.extra.raw_info.photo_200_orig
-      tempfile        = open(image_url)
-      temp = Tempfile.new([auth.uid, '.jpg'])
-      temp.binmode
-      temp.write tempfile.read
-      temp.close
-
-
-      image_model     = Image.create!(attachment: temp)
       user.email      = auth.info.email || "#{auth.provider}_#{auth.uid}@#{auth.provider}.com"
       user.name       = auth.info.name
-      user.avatar     = image_model
+      user.build_avatar(remote_attachment_url: image_url)
     end
 
 

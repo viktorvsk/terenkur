@@ -1,6 +1,6 @@
 ActiveAdmin.register User do
   permit_params :email, :password, :password_confirmation, :name, :phone,
-                :about, :birthdate, :admin
+                :about, :birthdate, :admin, :sex
   actions :all, except: [:show]
   menu priority: 7
 
@@ -31,6 +31,7 @@ ActiveAdmin.register User do
       f.input :about
       f.input :birthdate
       f.input :admin
+      f.input :sex, as: :select, collection: [[t('sex.form.male'),:male],[t('sex.form.female'),:female]]
       f.input :password
       f.input :password_confirmation
     end

@@ -19,7 +19,7 @@ ActiveAdmin.register EventType do
     f.inputs "Тип события" do
       f.input :name, label: "Название"
       f.input :permalink, label: "Ссылка"
-      f.input :keywords, label: "Ключевые слова для определения типа"
+      f.input :keywords, label: "Ключевые слова для определения типа", as: :text
     end
 
     f.actions

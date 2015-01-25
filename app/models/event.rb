@@ -13,7 +13,8 @@ class Event < ActiveRecord::Base
   has_many :images, as: :imageable, dependent: :destroy
   validates :name, presence: true, uniqueness: true
   validates :user, :teaser, :event_type, presence: true
-  validates_numericality_of :min_price, allow_nil: true
+  validates :days, presence: true
+  validates_numericality_of :min_price, presence: true
   validates_numericality_of :max_price, :greater_than_or_equal_to => :min_price, allow_nil: true, :unless => Proc.new {|event| event.min_price.nil? }
 
   accepts_nested_attributes_for :images, allow_destroy: true, reject_if: :all_blank

@@ -41,7 +41,7 @@ ActiveAdmin.register Event do
       f.input :address
       f.input :teaser
       f.input :min_price
-      #f.input :max_price
+      f.input :max_price
       f.cktext_area :content, input_html: { type: :textarea }
     end
 
