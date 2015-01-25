@@ -12,19 +12,19 @@
             .row
               .form-group.col-sm-4
                 = f.label :name
-                = f.text_field :name, class: 'form-control'
+                = f.text_field :name, class: 'form-control', required: true
               .form-group.col-sm-4
                 = f.label :email
-                = f.email_field :email, class: 'form-control'
+                = f.email_field :email, class: 'form-control', required: true
               .form-group.col-sm-4
                 = f.label :phone
-                = f.phone_field :phone, class: 'form-control'
+                = f.phone_field :phone, class: 'form-control', required: true
               .form-group.col-sm-6
                 = f.label :sex
                 = f.select :sex, options_for_select([[t('sex.form.male'),:male],[t('sex.form.female'),:female]], 1), {}, class: 'form-control'
               .form-group.col-sm-6
                 = f.label :password
-                = f.password_field :password, class: 'form-control'
+                = f.password_field :password, class: 'form-control', required: true
         .modal-footer
           .row
             .col-xs-6.text-left
@@ -34,7 +34,9 @@
 #timer.modal.fade{ :tabindex => '-1' }
   .modal-dialog
     .modal-content
-      .modal-header= Conf['popup.title']
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+        %h4.modal-title= Conf['popup.title']
       .modal-body
         = Conf['popup.body'].html_safe
       .modal-footer

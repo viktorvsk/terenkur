@@ -1,7 +1,7 @@
 - content_for :top_background_content do render 'user_top_bar', user: @user end
 - content_for :title do @user.name end
 
-- if @user.display_about.present?
+- if @user.display_about.strip.present?
   %section.panel.panel-info
     %header.panel-heading Обо мне
     %section.panel-body= @user.display_about

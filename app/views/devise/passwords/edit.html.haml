@@ -1,7 +1,7 @@
 - content_for :title do "Восстановить пароль" end
 .row
   .col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
-    %h2 Change your password
+    %h2 Изменить пароля
     .jumbotron
       = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
         = devise_error_messages!
@@ -9,11 +9,11 @@
         .field
           = f.label :password, "New password"
           %br/
-          = f.password_field :password, autofocus: true, autocomplete: "off"
+          = f.password_field :password, autofocus: true, autocomplete: "off", required: true
         .field
           = f.label :password_confirmation, "Confirm new password"
           %br/
-          = f.password_field :password_confirmation, autocomplete: "off"
+          = f.password_field :password_confirmation, autocomplete: "off", required: true
         .actions
-          = f.submit "Change my password", class: 'ui button blue'
+          = f.submit "Изменить", class: 'ui button blue'
       = render "devise/shared/links"

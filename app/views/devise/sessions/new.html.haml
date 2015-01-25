@@ -1,19 +1,19 @@
-- content_for :title do "Авторизоваться" end
+- content_for :title do "Авторизация" end
 .row
   .col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
-    %h2 Log in
+    %h2 Авторизоваться
     .jumbotron
       = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
         .form-group
           = f.label :email
-          = f.email_field :email, autofocus: true, class: 'form-control'
+          = f.email_field :email, autofocus: true, class: 'form-control', required: true
         .form-group
           = f.label :password
-          = f.password_field :password, autocomplete: "off", class: 'form-control'
+          = f.password_field :password, autocomplete: "off", class: 'form-control', required: true
         - if devise_mapping.rememberable?
           .form-group
             = f.check_box :remember_me
             = f.label :remember_me
         .actions
-          = f.submit "Log in", class: 'btn btn-info'
-      = render "devise/shared/links"
+          = f.submit "Зайти", class: 'btn btn-info'
+        = render "devise/shared/links"

@@ -4,7 +4,7 @@
       = form_for user do |f|
         - if user.errors.any?
           #error_explanation.alert.alert-danger
-            %h2= "#{pluralize(user.errors.count, "error")} prohibited this user from being saved:"
+            %h2= "#{user.errors.count} #{Russian::pluralize(user.errors.count, "ошибка", "ошибки", "ошибок")}  возникло при сохранении информации профиля."
             %ul
               - user.errors.full_messages.each do |msg|
                 %li= msg
@@ -17,15 +17,15 @@
           .col-sm-3
             .form-group
               = f.label :name
-              = f.text_field :name, class: 'form-control'
+              = f.text_field :name, class: 'form-control', required: true
           .col-sm-3
             .form-group
               = f.label :email
-              = f.email_field :email, class: 'form-control'
+              = f.email_field :email, class: 'form-control', required: true
           .col-sm-3
             .form-group
               = f.label :phone
-              = f.phone_field :phone, class: 'form-control'
+              = f.phone_field :phone, class: 'form-control', required: true
         .row
           .col-sm-4
             .form-group

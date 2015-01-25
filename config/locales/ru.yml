@@ -28,6 +28,14 @@ ru:
         images: Изображения
         min_price: Цена от
         max_price: Цена до
+      user:
+        name: Имя
+        avatar: Фото
+        phone: Телефон
+        sex: Пол
+        password: Пароль
+        birthdate: Дата рождения
+        about: О себе
   sex:
     form:
       male: муж.
@@ -74,6 +82,26 @@ ru:
       previous: '←'
       first: '«'
   activerecord:
+    attributes:
+      user:
+        name: Имя
+        avatar: Фото
+        phone: Телефон
+        sex: Пол
+        password: Пароль
+        password_confirmation: Подтверждение пароля
+        birthdate: Дата рождения
+        about: О себе
+      event:
+        name: Заголовок
+        days: Дата
+        event_type: Тип мероприятия
+        city: Город
+        teaser: Короткое описание
+        content: Детальное описание
+        images: Изображения
+        min_price: Минимальная цена
+        max_price: Максимальная цена
     models:
       city:
         one: Город

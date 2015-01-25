@@ -4,39 +4,39 @@
       = form_for @event do |f|
         - if @event.errors.any?
           #error_explanation.alert.alert-danger
-            %h2= "#{pluralize(@event.errors.count, "error")} prohibited this event from being saved:"
+            %h2= "#{@event.errors.count} #{Russian::pluralize(@event.errors.count, "ошибка", "ошибки", "ошибок")} произошла при сохранении события:"
             %ul
               - @event.errors.full_messages.each do |msg|
                 %li= msg
 
         .form-group
           = f.label :name
-          = f.text_field :name, class: 'form-control'
+          = f.text_field :name, class: 'form-control', required: true
 
         .row
           .form-group.col-sm-6.col-md-3
             = f.label :date
-            = f.text_field :date, class: 'form-control'
+            = f.text_field :date, class: 'form-control', required: true
           .form-group.col-sm-6.col-md-3
             = f.label :event_type
-            = f.select :event_type, options_for_select(EventType.all.map{ |e| [e.name, e.id] }), {}, class: 'form-control'
+            = f.select :event_type, options_for_select(EventType.all.map{ |e| [e.name, e.id] }, f.object.event_type.try(:id)), {}, class: 'form-control', required: true
           .form-group.col-sm-6.col-md-3
             = f.label :city
-            = f.select :city, options_for_select(City.all.map{ |e| [e.name, e.id] }), {}, class: 'form-control'
+            = f.select :city, options_for_select(City.all.map{ |e| [e.name, e.id] }, f.object.city.try(:id)), {}, class: 'form-control', required: true
           .form-group.col-sm-6.col-md-3
             .row
               .col-sm-6
                 = f.label :min_price
-                = f.number_field :min_price, class: 'form-control'
+                = f.number_field :min_price, class: 'form-control', required: true
               .col-sm-6
                 = f.label :max_price
                 = f.number_field :max_price, class: 'form-control'
         .form-group
           = f.label :teaser
-          = f.text_area :teaser, class: 'form-control'
+          = f.text_area :teaser, class: 'form-control', required: true
         .form-group
           = f.label :content
-          = f.cktext_area :content, class: 'form-control', :ckeditor => {:toolbar => 'mini', language: 'ru'}
+          = f.cktext_area :content, class: 'form-control', :ckeditor => {:toolbar => 'mini', language: 'ru'}, required: true
         .form-group
           = f.label :images
           = link_to '#', class: 'btn btn-fab btn-fab-mini btn-primary btn-sm image-adder' do

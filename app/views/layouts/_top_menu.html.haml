@@ -54,4 +54,5 @@
           %li.visible-xs=link_to t('menu.logout'), destroy_user_session_path, method: :delete
         - else
           %li=link_to t('menu.sign_up'), new_user_registration_path
+          %li=link_to image_tag("vkontakte.png", size: '16x16'), omniauth_authorize_path(:user, :vkontakte)
           %li=link_to t('menu.login'), new_user_session_path

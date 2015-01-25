@@ -1,13 +1,13 @@
 - content_for :title do "Забыли пароль?" end
 .row
   .col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
-    %h2 Forgot password?
+    %h2 Забыли пароль?
     .jumbotron
       = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
         = devise_error_messages!
         .form-group
           = f.label :email
-          = f.email_field :email, autofocus: true, class: 'form-control'
+          = f.email_field :email, autofocus: true, class: 'form-control', required: true
         .text-right
-          = f.submit "Send me reset password instructions", class: 'btn btn-info'
+          = f.submit "Получить инструкции по восстановлению пароля", class: 'btn btn-info'
       = render "devise/shared/links"

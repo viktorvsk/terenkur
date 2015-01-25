@@ -1,22 +1,22 @@
-- content_for :title do "Зарегистрироваться" end
+- content_for :title do "Регистрация" end
 .row
   .col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
-    %h2 Sign up
+    %h2 Зарегистрироваться
     .jumbotron
       = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
         = devise_error_messages!
         .form-group
           = f.label :email
-          = f.email_field :email, autofocus: true, class: 'form-control'
+          = f.email_field :email, autofocus: true, class: 'form-control', required: true
         .form-group
           = f.label :password
           - if @validatable
             %em
               (#{@minimum_password_length} characters minimum)
-          = f.password_field :password, autocomplete: "off", class: 'form-control'
+          = f.password_field :password, autocomplete: "off", class: 'form-control', required: true
         .form-group
           = f.label :password_confirmation
-          = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
+          = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', required: true
         .actions
-          = f.submit "Sign up", class: 'btn btn-info'
+          = f.submit "Зарегистрироваться", class: 'btn btn-info'
       = render "devise/shared/links"
