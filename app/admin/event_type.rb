@@ -1,5 +1,5 @@
 ActiveAdmin.register EventType do
-  permit_params :name, :permalink
+  permit_params :name, :permalink, :keywords
   actions :all, except: [:show]
 
   menu priority: 5, label: proc{ t("active_admin.menu.event_type") }
@@ -19,6 +19,7 @@ ActiveAdmin.register EventType do
     f.inputs "Тип события" do
       f.input :name, label: "Название"
       f.input :permalink, label: "Ссылка"
+      f.input :keywords, label: "Ключевые слова для определения типа"
     end
 
     f.actions

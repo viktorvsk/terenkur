@@ -1,5 +1,5 @@
 ActiveAdmin.register Event do
-  permit_params :name, :permalink, :user_id, :city_id, :address, :content, :teaser
+  permit_params :name, :permalink, :user_id, :city_id, :address, :content, :teaser, :min_price, :max_price
   actions :all, except: [:show]
 
   menu priority: 3, label: proc{ t("active_admin.menu.events") }
@@ -40,6 +40,8 @@ ActiveAdmin.register Event do
       f.input :city
       f.input :address
       f.input :teaser
+      f.input :min_price
+      #f.input :max_price
       f.cktext_area :content, input_html: { type: :textarea }
     end
 
