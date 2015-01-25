@@ -4,7 +4,9 @@ class CreateCities < ActiveRecord::Migration
       t.string :name, null: false, default: ""
       t.string :permalink, null: false, default: ""
       t.string :header, default: ""
+      t.string :currency, default: 'грн.'
       t.text :description, default: ""
+      t.string :vk_public_url, default: ''
 
       t.timestamps
     end
