@@ -12,6 +12,11 @@
         .text-center
           %header
             %h3= link_to event.name, event_path(event)
+            Цена:
+            = price(event.price)
+            %br/
+            Адрес:
+            = address(event.address)
           = render 'shared/take_part', event: event
         %article.teaser= event.teaser
         .text-center

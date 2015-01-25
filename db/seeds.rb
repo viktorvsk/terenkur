@@ -7,13 +7,13 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 cities = City.create([
-    { name: 'Харьков' },
-    { name: 'Киев' },
-    { name: 'Львов' },
-    { name: 'Днепропетровск' },
-    { name: 'Одесса' },
-    { name: 'Москва' },
-    { name: 'Санкт-Петербург' }
+    { name: 'Харьков', currency: 'грн.', vk_public_url: '78864351' },
+    { name: 'Киев', currency: 'грн.' },
+    { name: 'Львов', currency: 'грн.' },
+    { name: 'Днепропетровск', currency: 'грн.' },
+    { name: 'Одесса', currency: 'грн.' },
+    { name: 'Москва', currency: 'руб.' },
+    { name: 'Санкт-Петербург', currency: 'руб.' }
   ])
 puts "Created default cities"
 event_types = EventType.create([
@@ -35,21 +35,32 @@ admin = User.create( email: 'simplicate@yandex.ua', password: 11111111, admin: t
 user  = User.create( email: 'khahapx@gmail.com', password: 11111111, admin: false )
 puts "Create default admin and user"
 
-user.events.create([
+user.events.create!([
     {
       name: "Детский утренник на первое января",
       event_type: 'утренник',
-      teaser: 'Начало в 8:00, билеты: 25 грн. детский, 50 грн. взрослый. Продолжительность 1 час.',
+      content: 'Начало в 8:00, билеты: 25 грн. <b>детский</b>, 50 грн. взрослый. Продолжительность 1 час.',
       city: 'Харьков',
-      content: '<h1>Очень интересный детский утренник!</h1>',
+      teaser: 'Очень интересный детский утренник!',
       image: 'http://terenkur.com/system/events/images/000/014/143/original/0Wqx0RXzPqk.jpg?1420153238'
     },
     {
       name: "Студенческая вечеринка",
-      event_type: 'ночной клуб',
-      teaser: 'Начало в 23:00, билеты: 100 грн, депозит за столик: 300 грн. До 6 утра.',
+      content: 'Начало в 23:00, билеты: 100 грн, депозит за столик: 300 грн. До 6 утра. Будем танцевать и веселиться всю ночь!',
       city: 'Харьков',
-      content: '<h2>Оторвемся!</h2>',
+      teaser: '<h2>Оторвемся!</h2>',
+      event_type: '',
+      images: [
+        'http://terenkur.com/system/events/images/000/011/440/original/903063.jpg?1418295839',
+        'http://terenkur.com/system/events/images/000/009/137/original/-yOI8b8tdbU.jpg?1416956553'
+      ]
+    },
+    {
+      name: "Выставка фотографий",
+      teaser: 'Начало в 23:00',
+      city: 'Харьков',
+      event_type: '',
+      content: '<h2>Пофотографируемся!</h2>',
       images: [
         'http://terenkur.com/system/events/images/000/011/440/original/903063.jpg?1418295839',
         'http://terenkur.com/system/events/images/000/009/137/original/-yOI8b8tdbU.jpg?1416956553'

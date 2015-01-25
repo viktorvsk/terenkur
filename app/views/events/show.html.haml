@@ -14,7 +14,10 @@
       .panel-body
         .col-xs-12
           Адрес:
-          = @event.address
+          = address(@event.address)
+          %br/
+          Цена:
+          = price(@event.price)
   .col-sm-12
     .panel.panel-primary
       .panel-heading Комментарии

@@ -15,4 +15,17 @@ module EventsHelper
     result.join(' ')
   end
 
+  def address(address)
+    if address.present?
+      link_to "https://www.google.com.ua/maps/place/#{URI.encode(URI.decode(address))}", target: :_blank do
+        (address + content_tag(:span, "", class: 'mdi-maps-pin-drop')).html_safe
+      end
+    else
+      "уточняется"
+    end
+  end
+
+  def price(price)
+    price.presence || "уточняется"
+  end
 end

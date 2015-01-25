@@ -14,15 +14,23 @@
           = f.text_field :name, class: 'form-control'
 
         .row
-          .form-group.col-sm-4
+          .form-group.col-sm-6.col-md-3
             = f.label :date
             = f.text_field :date, class: 'form-control'
-          .form-group.col-sm-4
+          .form-group.col-sm-6.col-md-3
             = f.label :event_type
             = f.select :event_type, options_for_select(EventType.all.map{ |e| [e.name, e.id] }), {}, class: 'form-control'
-          .form-group.col-sm-4
+          .form-group.col-sm-6.col-md-3
             = f.label :city
             = f.select :city, options_for_select(City.all.map{ |e| [e.name, e.id] }), {}, class: 'form-control'
+          .form-group.col-sm-6.col-md-3
+            .row
+              .col-sm-6
+                = f.label :min_price
+                = f.number_field :min_price, class: 'form-control'
+              .col-sm-6
+                = f.label :max_price
+                = f.number_field :max_price, class: 'form-control'
         .form-group
           = f.label :teaser
           = f.text_area :teaser, class: 'form-control'

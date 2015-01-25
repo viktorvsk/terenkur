@@ -9,8 +9,9 @@
       %p Мы знаем о всех событиях в твоем городе.
       %p Не знаешь, куда сходить с девушкой? Спроси у нас.
       %p Где провести выходные с семьей?
-%article
-  %header
-    %h1 Случайное событие
-  %section
-    = render 'big_event', event: @event
+- if @event.present?
+  %article
+    %header
+      %h1 Случайное событие
+    %section
+      = render 'big_event', event: @event

@@ -26,6 +26,8 @@ ru:
         teaser: Короткое описание
         content: Детальное описание
         images: Изображения
+        min_price: Цена от
+        max_price: Цена до
   sex:
     form:
       male: муж.

@@ -7,13 +7,16 @@
         %section.event-details.text-left.row
           .col-xs-12
             %b Адрес:
-            = event.address.presence || "уточняется (напишите нам, и мы узнаем адрес и сообщим)"
+            = address(event.address)
           .col-xs-12
             %b Тип мероприятия:
             = link_to event.event_type.name, search_path(type: event.event_type.permalink)
           .col-xs-12
             %b Город:
             = link_to event.city.name, search_path(city: event.city.permalink)
+          .col-xs-12
+            %b Цена:
+            = price(event.price)
           .col-xs-12
             %b
               = %{#{t("sex.added.#{event.user.sex}")}:}
