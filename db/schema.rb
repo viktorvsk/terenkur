@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150124155051) do
+ActiveRecord::Schema.define(version: 20150125112921) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20150124155051) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "vk_public_url"
+    t.string   "currency",      default: ""
   end
 
   add_index "cities", ["name"], name: "index_cities_on_name", unique: true, using: :btree
@@ -115,8 +116,10 @@ ActiveRecord::Schema.define(version: 20150124155051) do
     t.string   "permalink",  default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "keywords"
   end
 
+  add_index "event_types", ["keywords"], name: "index_event_types_on_keywords", using: :btree
   add_index "event_types", ["name"], name: "index_event_types_on_name", unique: true, using: :btree
   add_index "event_types", ["permalink"], name: "index_event_types_on_permalink", unique: true, using: :btree
 
@@ -130,6 +133,9 @@ ActiveRecord::Schema.define(version: 20150124155051) do
     t.integer  "city_id",                                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "min_price"
+    t.integer  "max_price"
+    t.text     "content"
   end
 
   add_index "events", ["city_id"], name: "index_events_on_city_id", using: :btree

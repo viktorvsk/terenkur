@@ -7,7 +7,7 @@ class EventsController < ApplicationController
   # GET /events
   def index
     @event                  = Event.real.actual.order("RANDOM()").first
-    @city                   = @event.city
+    @city                   = @event.try(:city)
     @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
     @event_types_selection  = EventType.all.order(:name).map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
   end
@@ -116,7 +116,9 @@ class EventsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def event_params
       #all = params[:event][:event_description_attributes][:content].keys
-      params.require(:event).permit(:name, :event_type, :city, :date, :content, :teaser, images_attributes: [:id, :_destroy, :attachment], comment: [:comment])
+      params.require(:event).permit(:name, :event_type, :city, :date, :content,
+                                    :teaser, :min_price, :max_price,
+                                    images_attributes: [:id, :_destroy, :attachment], comment: [:comment])
     end
 
     def user_params

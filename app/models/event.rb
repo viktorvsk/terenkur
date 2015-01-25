@@ -15,8 +15,10 @@ class Event < ActiveRecord::Base
   has_many :images, as: :imageable, dependent: :destroy
   validates :name, presence: true, uniqueness: true
   validates :user, :teaser, :event_type, presence: true
+  validates_numericality_of :min_price, allow_nil: true
+  validates_numericality_of :max_price, :greater_than_or_equal_to => :min_price, allow_nil: true, :unless => Proc.new {|event| event.min_price.nil? }
 
-  delegate :content, to: :event_description, allow_nil: true
+  delegate :content, :guess_type, :set_price, :set_type, to: :event_description, allow_nil: true
   accepts_nested_attributes_for :images, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :event_description
 
@@ -26,6 +28,26 @@ class Event < ActiveRecord::Base
 
   def display_content
     Sanitize.fragment(self.content, Sanitize::Config::BASIC).html_safe
+  end
+
+  def price
+    return nil if min_price.nil? and max_price.nil?
+    min, max = self.min_price.to_i, self.max_price.to_i
+
+    if min > 0 and max > min
+      "от #{min} до #{max} #{city.currency}"
+    elsif min > 0 and max <= min
+      "от #{min} #{city.currency}"
+    elsif min == 0 and max >= 0
+      "бесплатно - #{max} #{city.currency}"
+    else
+      nil
+    end
+  end
+
+  def price=(value=nil)
+    binding.pry
+    set_price
   end
 
   def date
@@ -92,6 +114,7 @@ class Event < ActiveRecord::Base
           else
             event = owner.events.new(e)
             event.event_type = '' unless event.event_type.present?
+            event.price = '' unless event.price.present?
             events_to_create << event
           end
         end
@@ -119,16 +142,11 @@ class Event < ActiveRecord::Base
       t.event_type
     end
 
-    et = guess(:event_type) if et.nil?
+    binding.pry
+
+    et = guess_type if et.nil?
 
     self[:event_type_id] = et.id
-  end
-
-  def guess(what)
-    case what
-    when :event_type
-      EventType.all.sample
-    end
   end
 
   def teaser=(value)
