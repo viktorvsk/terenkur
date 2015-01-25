@@ -4,7 +4,6 @@
       = render 'events/event_controls', event: event if can?(:manage, event)
 
       = event.event_type.name
-      В
       = t("cities.#{event.city.permalink}.gen")
     .event-item-body.col-xs-12
       = link_to image_tag('/spinner.gif', class: 'img-responsive shadow-z-2 lazy', 'data-original' => event.preview), event_path(event)

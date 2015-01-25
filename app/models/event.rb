@@ -4,23 +4,24 @@ class Event < ActiveRecord::Base
   scope :real,    -> { joins(:days, :city, :event_type) }
   scope :today,   -> { where(days: {name: Date.today}) }
   scope :actual,  -> { where('days.name >= ?',Date.today) }
-  after_create :create_event_description_with_content
   belongs_to :user
   belongs_to :event_type
   belongs_to :city
   has_many :event_days, dependent: :destroy
   has_many :days, through: :event_days
   has_many :orders, dependent: :destroy
-  has_one :event_description, dependent: :destroy, autosave: true
   has_many :images, as: :imageable, dependent: :destroy
   validates :name, presence: true, uniqueness: true
   validates :user, :teaser, :event_type, presence: true
   validates_numericality_of :min_price, allow_nil: true
   validates_numericality_of :max_price, :greater_than_or_equal_to => :min_price, allow_nil: true, :unless => Proc.new {|event| event.min_price.nil? }
 
-  delegate :content, :guess_type, :set_price, :set_type, to: :event_description, allow_nil: true
   accepts_nested_attributes_for :images, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :event_description
+
+  def to_param
+    permalink
+  end
+
 
   def preview(type=nil)
     images.present? ? images.first.attachment.url(type) : 'event-placeholder.png'
@@ -30,55 +31,7 @@ class Event < ActiveRecord::Base
     Sanitize.fragment(self.content, Sanitize::Config::BASIC).html_safe
   end
 
-  def price
-    return nil if min_price.nil? and max_price.nil?
-    min, max = self.min_price.to_i, self.max_price.to_i
-
-    if min > 0 and max > min
-      "от #{min} до #{max} #{city.currency}"
-    elsif min > 0 and max <= min
-      "от #{min} #{city.currency}"
-    elsif min == 0 and max >= 0
-      "бесплатно - #{max} #{city.currency}"
-    else
-      nil
-    end
-  end
-
-  def price=(value=nil)
-    binding.pry
-    set_price
-  end
-
-  def date
-    days.map{ |day| I18n.localize(Date.parse(day.name), format: "%e %b") }.join(', ')
-  end
-
-  def date=(value)
-    days.destroy_all if persisted?
-    result = Day.parse(value)
-    if result.present? and result != "Invalid date"
-      to_assign = if result.kind_of?(String)
-        Day.where(name: result).first_or_create! # Log
-      else
-        # Log invalid dates
-        result = result.reject{ |d| d == "Invalid date" or not d.present? }
-
-        result.map{ |day| Day.where(name: day).first_or_create! } # Log
-        Day.where(name: result)
-      end
-
-      to_assign = [to_assign] if to_assign.kind_of?(Day)
-
-      to_assign = to_assign.where('name >= ?', Date.today.to_s(:db)).order(:name).first(7) if to_assign.count > 7
-
-      days << to_assign # Log
-    end
-  end
-
-  def to_param
-    permalink
-  end
+  ### For API ###
 
   def save_from_api!
     begin
@@ -133,20 +86,42 @@ class Event < ActiveRecord::Base
 
   end
 
-  def event_type=(value)
-    et = if value.kind_of?(EventType)
-      value
-    elsif t = EventType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
-      t
-    elsif t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
-      t.event_type
+  ### End API ###
+
+  def set_type
+    self.event_type = guess_type
+  end
+
+  def set_price
+    p = price_from_content
+    case p.try(:count)
+    when 1
+      self.min_price = p.first
+      self.max_price = max_price = nil
+    when 2
+      self.min_price = p.first
+      self.max_price = p.last
+    else
+      nil
     end
+  end
 
-    binding.pry
+  def guess_type
+    event_type_from_content.presence or EventType.all.sample
+  end
 
-    et = guess_type if et.nil?
+  ### Virtual attributes ###
+  def images=(value)
+    case value
+    when Array
+      value.map{ |image_url| self.image = image_url }
+    when String
+     self.image = value
+    end
+  end
 
-    self[:event_type_id] = et.id
+  def image=(v)
+    self.images.new(remote_attachment_url: v)
   end
 
   def teaser=(value)
@@ -165,31 +140,87 @@ class Event < ActiveRecord::Base
     self[:city_id] = ct.id
   end
 
-  def content=(value)
-    if self.event_description.present?
-      self.event_description.update :content => value
+  def event_type=(value)
+    et = if value.kind_of?(EventType)
+      value
+    elsif value =~ /\A\d+\z/
+      EventType.find(value)
+    elsif t = EventType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
+      t
+    elsif t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
+      t.event_type
+    end
+
+    et = guess_type if et.nil?
+
+    self[:event_type_id] = et.id
+  end
+
+  def price
+    return nil if min_price.nil? and max_price.nil?
+    min, max = self.min_price.to_i, self.max_price.to_i
+
+    if min > 0 and max > min
+      "от #{min} до #{max} #{city.currency}"
+    elsif min > 0 and max <= min
+      "от #{min} #{city.currency}"
+    elsif min == 0 and max >= 0
+      "бесплатно - #{max} #{city.currency}"
     else
-      @content = value
-    end
-
-  end
-
-  def images=(value)
-    case value
-    when Array
-      value.map{ |image_url| self.image = image_url }
-    when String
-     self.image = value
+      nil
     end
   end
 
-  def image=(v)
-    self.images.new(remote_attachment_url: v)
+  def price=(value=nil)
+    set_price
   end
+
+  def date
+    days.map{ |day| I18n.localize(Date.parse(day.name), format: "%e %b") }.join(', ')
+  end
+
+  def date=(value)
+    days.destroy_all if persisted?
+    result = Day.parse(value)
+    if result.present? and result != "Invalid date"
+      to_assign = if result.kind_of?(String)
+        Day.where(name: result).first_or_create! # Log
+      else
+        # Log invalid dates
+        result = result.reject{ |d| d == "Invalid date" or not d.present? }
+
+        result.map{ |day| Day.where(name: day).first_or_create! } # Log
+        Day.where(name: result)
+      end
+
+      to_assign = [to_assign] if to_assign.kind_of?(Day)
+
+      to_assign = to_assign.where('name >= ?', Date.today.to_s(:db)).order(:name).first(7) if to_assign.count > 7
+
+      days << to_assign # Log
+    end
+  end
+
+  ### End of virtual attributes ###
 
   private
-  def create_event_description_with_content
-    self.create_event_description(content: @content)
-  end
+
+    def price_from_content
+      return unless content.present?
+      currencies = %w{грн гр гривен uah руб рубл. грв грвн ₴ \$}.join('|')
+      prices = self.content.mb_chars.downcase.to_s.delete(" ").scan(/(\d+)(?:#{currencies})/).flatten.map(&:to_i).sort
+      prices.count > 1 ? [prices.first, prices.last] : [prices.first]
+    end
+
+    def event_type_from_content
+      return unless content.present?
+      keywords  = EventType.keywords.join('|')
+      results   = content.mb_chars.downcase.to_s.scan(/#{keywords}/)
+      counts    = Hash.new(0)
+      results.each { |keyword| counts[keyword] += 1 }
+      event_type = counts.max_by{ |k| k[1] }.try(:first)
+      return unless event_type
+      EventType.where('keywords LIKE ?', "%#{event_type}%").first
+    end
 
 end

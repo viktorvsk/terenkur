@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 cities = City.create([
-    { name: 'Харьков', currency: 'грн.', vk_public_url: '78864351' },
+    { name: 'Харьков', permalink: 'kharkov', currency: 'грн.', vk_public_url: '78864351' },
     { name: 'Киев', currency: 'грн.' },
     { name: 'Львов', currency: 'грн.' },
     { name: 'Днепропетровск', currency: 'грн.' },
@@ -20,7 +20,7 @@ event_types = EventType.create([
     { name: 'Активный отдых' },
     { name: 'Саморазвитие' },
     { name: 'Романтический отдых' },
-    { name: 'Отдых компанией' },
+    { name: 'Отдых компанией', keywords: "веселиться\nгулять" },
     { name: 'Семейный отдых' },
     { name: 'Мастер-классы' }
   ])
@@ -41,6 +41,7 @@ user.events.create!([
       event_type: 'утренник',
       content: 'Начало в 8:00, билеты: 25 грн. <b>детский</b>, 50 грн. взрослый. Продолжительность 1 час.',
       city: 'Харьков',
+      price: '',
       teaser: 'Очень интересный детский утренник!',
       image: 'http://terenkur.com/system/events/images/000/014/143/original/0Wqx0RXzPqk.jpg?1420153238'
     },
