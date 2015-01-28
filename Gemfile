@@ -58,5 +58,10 @@ group :development do
   gem 'pry-rails'
   gem "erb2haml"
   gem 'quiet_assets'
+  gem 'capistrano', '3.2.1'
+  gem 'capistrano-rails'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rvm'
+  gem 'capistrano3-unicorn'
 end
 
