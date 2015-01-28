@@ -29,6 +29,7 @@ gem 'acts_as_commentable'
 gem 'activeadmin', github: 'activeadmin'
 gem 'active_skin'
 gem 'activeadmin_tinymce'
+gem 'browserlog', github: 'victorvsk/browserlog'
 
 
 # Helper gems

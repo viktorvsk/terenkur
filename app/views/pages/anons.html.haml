@@ -1,0 +1,30 @@
+%section.anons
+  .inner
+    %header
+      %h1 Получайте анонс самых интересных событий в Харькове <i>каждую неделю</i>.
+      %h2
+        Ресурс
+        = link_to 'Теренкур', root_path
+        каждый день добавляет новые события в Харькове и Украине.
+
+    .row
+      .col-md-6.col-md-offset-3
+        %article.panel.panel-primary
+          %header.panel-heading
+            Подписаться на анонс
+          = form_tag User.new do
+            %section.panel-body
+              %p
+                В сообществе «
+                = link_to 'Куда пойти Харьков?', 'http://vk.com/kharkov_terenkur'
+                » мы анонсируем самые интересные события на следующий день.
+              %p Оставьте свой e-mail и получайте 1 раз в неделю анонс лучших событий предстоящей недели в Харькове.
+              = text_field_tag :email, nil,  class: 'form-control', placeholder: "Email"
+              Или просто зайдите через
+              = link_to 'Вконтакте', omniauth_authorize_path(:user, :vkontakte)
+              и мы добавим Вас в список получателей анонса сами.
+            %footer.panel-footer.text-right
+              = submit_tag 'Подписаться', class: 'btn btn-primary'
+    .row
+      .col-xs-12
+        = image_tag('anons.jpg')

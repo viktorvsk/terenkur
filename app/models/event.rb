@@ -29,7 +29,9 @@ class Event < ActiveRecord::Base
   end
 
   def display_content
-    Sanitize.fragment(self.content, Sanitize::Config::BASIC).html_safe
+    text = self.content
+    Conf.get_all('deletions').values.each{ |v| text.gsub!(v, '') } if text.present?
+    Sanitize.fragment(text, Sanitize::Config::BASIC).html_safe
   end
 
   ### For API ###
@@ -70,8 +72,9 @@ class Event < ActiveRecord::Base
             next
           else
             event = owner.events.new(e)
-            event.event_type = '' unless event.event_type.present?
-            event.price = '' unless event.price.present?
+            event.event_type  = '' unless event.event_type.present?
+            event.price       = '' unless event.price.present?
+            event.city        = '' unless event.city.present?
             events_to_create << event
           end
         end
@@ -125,7 +128,14 @@ class Event < ActiveRecord::Base
   end
 
   def image=(v)
-    self.images.new(remote_attachment_url: v)
+    begin
+      Timeout::timeout(3) do
+        self.images.new(remote_attachment_url: v)
+      end
+    rescue Timeout::Error
+      SlowImagesLog.warn("Slow Image: #{v}")
+      nil
+    end
   end
 
   def teaser=(value)
@@ -140,7 +150,7 @@ class Event < ActiveRecord::Base
     else
       City.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
     end
-    raise ActiveRecord::RecordNotFound if ct.nil?
+    ct = City.first if ct.nil?
     self[:city_id] = ct.id
   end
 
@@ -149,9 +159,9 @@ class Event < ActiveRecord::Base
       value
     elsif value =~ /\A\d+\z/
       EventType.find(value)
-    elsif t = EventType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
+    elsif value and t = EventType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
       t
-    elsif t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
+    elsif value and t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
       t.event_type
     end
 

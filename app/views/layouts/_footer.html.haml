@@ -13,7 +13,7 @@
 
 
     #footer-vk.col-xs-12.col-sm-4.text-center
-      %h4= %{Группа ВКонтакте #{t("cities.#{@city.permalink}.gen")}} if @city.present?
+      %h4= %{Группа ВКонтакте #{t("cities.#{@city.permalink}.gen")}} if @city.present? and @city.vk_public_url.present?
       #vk_groups
     .col-xs-12.col-sm-4
       Есть у Вас появились вопросы, пишите нам на

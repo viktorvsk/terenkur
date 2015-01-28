@@ -8,9 +8,17 @@ search_constraints = lambda do |request|
   true
 end
 
+admin_constraint = lambda do |request|
+  request.env['warden'].authenticate? and request.env['warden'].user.admin?
+end
+
 Rails.application.routes.draw do
+  constraints admin_constraint do
+    mount Browserlog::Engine => '/logs'
+  end
   get 'about' => 'high_voltage/pages#show', id: 'about'
   get 'partners' => 'high_voltage/pages#show', id: 'partners'
+  get 'anons' => 'high_voltage/pages#show', id: 'anons'
 
 
   mount Ckeditor::Engine => '/ckeditor'

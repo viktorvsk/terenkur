@@ -36,6 +36,7 @@ class Day < ActiveRecord::Base
   class << self
 
     def parse(str)
+      return unless str.present?
       normalized  = normalize str
       value       = normalized.match(/,/) ? normalized.split(',') : normalized
       perform value
@@ -43,6 +44,7 @@ class Day < ActiveRecord::Base
 
     private
     def normalize(str)
+      return unless str.present?
       str = str.mb_chars.strip.downcase.to_s
       NORMALIZERS.each do |k,v|
         str.gsub!(k,v)
@@ -52,32 +54,40 @@ class Day < ActiveRecord::Base
 
     def perform(str)
       return unless str.present?
-      if str.kind_of?(Array)
-         dates = []
-         str.each do |date|
-          dates << perform(date)
-         end
-         dates.flatten.compact
-      else
-        monthes = %w[jan feb mar apr may jun jul aug sep oct nov dec].join('|')
-        str.downcase!
-        case
-        when str.match(/\A(\d{1,2}\.\d{1,2})\z/)
-          Date.parse("#{$1}.2015").to_s(:db)
-        when str.match( /\A(\d{1,2})-(\d{1,2}) (#{monthes})\s?+(201[456])?\z/ )
-          starts  = Date.parse("#$1 #$3 #$4")
-          ends    = Date.parse("#$2 #$3 #$4")
-          starts  = starts - 1.year if starts > ends
-          (starts..ends).to_a.map{ |d| d.to_s(:db) }
-        when str.match( /(.*) - (.*)/ )
-          starts  = Date.parse(perform("#$1"))
-          ends    = Date.parse(perform("#$2"))
-          starts  = starts - 1.year if starts > ends
-          (starts..ends).to_a.map{ |d| d.to_s(:db) }
+      begin
+        if str.kind_of?(Array)
+           dates = []
+           str.each do |date|
+            dates << perform(date)
+           end
+           dates.flatten.compact
         else
-          Date.parse(str).to_s(:db)
+          monthes = %w[jan feb mar apr may jun jul aug sep oct nov dec].join('|')
+          str.downcase!
+          case
+          when str.match(/\A(\d{1,2}\.\d{1,2})\z/)
+            Date.parse("#{$1}.2015").to_s(:db)
+          when str.match( /\A(\d{1,2})\s?+-\s?+(\d{1,2}) (#{monthes})\s?+(201[456])?\z/ )
+            starts  = Date.parse("#$1 #$3 #$4")
+            ends    = Date.parse("#$2 #$3 #$4")
+            parse_range(starts, ends)
+          when str.match( /(.*) - (.*)/ )
+            starts  = Date.parse(perform("#$1"))
+            ends    = Date.parse(perform("#$2"))
+            parse_range(starts, ends)
+          else
+            Date.parse(str).to_s(:db)
+          end
         end
+      rescue ArgumentError, TypeError => e
+        WrongDatesLog.error("#{e.message}: #{str}")
+        nil
       end
+    end
+
+    def parse_range(starts, ends)
+      starts  = starts - 1.year if starts > ends
+      (starts..ends).to_a.map{ |d| d.to_s(:db) }
     end
   end
 

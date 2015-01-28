@@ -25,7 +25,11 @@ class Api::V1::EventsController < Api::V1::ApiController
       end
     end
 
-    params[:events] = params[:events].reject{ |e| e['members'].present? and e['members'].to_i < 25 }
+    params[:events] = params[:events].reject{ |e|
+      e['members'].present? and
+      e['members'].delete(' ').to_i < 25 and
+      LowMembersLog.info("#{e['name']} #{e['members']} участников")
+    }
 
     message = Event.create_or_update_from_api(event_params, current_user, initial_count: initial_events_count)
     success!(message)
