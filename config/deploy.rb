@@ -15,10 +15,10 @@ set :format,            :pretty
 set :log_level,         :info #:debug
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log pids tmp/pids}
+set :linked_dirs, %w{bin log pids tmp/pids public/uploads}
 
 # Rails assets options
 set :assets_roles, [:all]
@@ -29,15 +29,15 @@ set :assets_roles, [:all]
 set :default_env, { rvm_bin_path: '~/.rvm/bin' }
 namespace :deploy do
 
-  # task :restart do
-  #   invoke 'unicorn:legacy_restart'
-  # end
+  task :restart do
+    invoke 'unicorn:legacy_restart'
+  end
 
   desc 'Setup'
   task :setup do
     on roles(:all) do
-      execute "mkdir #{shared_path}/config/"
-      execute "mkdir #{shared_path}/socket/"
+      execute "mkdir -p #{shared_path}/config/"
+      execute "mkdir -p #{shared_path}/socket/"
       upload!('shared/database.yml', "#{shared_path}/config/database.yml")
       upload!('shared/secrets.yml', "#{shared_path}/config/secrets.yml")
       within release_path do
@@ -85,23 +85,44 @@ namespace :deploy do
   #   run "if [ -f #{unicorn_pid} ] && [ -e /proc/$(cat #{unicorn_pid}) ]; then kill -QUIT `cat #{unicorn_pid}`; fi"
   # end
 
-  desc 'Create symlink'
-  task :symlink do
+  # desc 'Create symlink'
+  # task :symlink do
+  #   on roles(:all) do
+  #     execute "rm -f #{release_path}/config/database.yml"
+  #     execute "rm -f #{release_path}/config/secrets.yml"
+
+  #     execute "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+  #     execute "ln -s #{shared_path}/config/secrets.yml #{release_path}/config/secrets.yml"
+  #   end
+  # end
+
+  desc 'Disable Active Admin'
+  task :disable_active_admin do
     on roles(:all) do
-      execute "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-      execute "ln -s #{shared_path}/config/secrets.yml #{release_path}/config/secrets.yml"
-      execute "ln -s #{shared_path}/uploads #{release_path}/public/uploads"
+      within release_path do
+        execute "mv #{release_path}/app/admin/ #{release_path}/admin/"
+      end
     end
   end
 
-  after :finishing, 'deploy:cleanup'
-  after :finishing, 'deploy:restart'
+  desc 'Enable Active Admin'
+  task :enable_active_admin do
+    on roles(:all) do
+      execute "mv #{release_path}/admin/ #{release_path}/app/admin/"
+    end
+  end
 
-  after :updating, 'deploy:symlink'
+  after :finishing, :cleanup
+  after :finishing, :restart
 
-  before :setup, 'deploy:starting'
-  before :setup, 'deploy:updating'
-  before :setup, 'bundler:install'
+  # after :updating, :symlink
+
+  before :setup, :starting
+  before :setup, :updating
+  before :setup, :install
+
+  before 'deploy:assets:precompile', :disable_active_admin
+  after 'deploy:assets:precompile', :enable_active_admin
 
 end
 

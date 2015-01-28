@@ -11,6 +11,7 @@ require 'capistrano/bundler'
 require 'capistrano/rails'
 require 'capistrano/rails/migrations'
 require 'capistrano/rails/assets'
+require 'capistrano3/unicorn'
 
 
 

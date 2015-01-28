@@ -31,13 +31,14 @@
               %button.btn.btn-danger{"data-dismiss" => "modal"} Не участвовать
             .col-xs-6.text-right
               %button.btn.btn-info{type: :submit} Участвовать
-#timer.modal.fade{ :tabindex => '-1' }
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
-        %h4.modal-title= Conf['popup.title']
-      .modal-body
-        = Conf['popup.body'].html_safe
-      .modal-footer
-        %button.btn.btn-danger{"data-dismiss" => "modal"} Закрыть
+- if Conf['popup.body'].present? and Conf['popup.title'].present?
+  #timer.modal.fade{ :tabindex => '-1' }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+          %h4.modal-title= Conf['popup.title']
+        .modal-body
+          = Conf['popup.body'].html_safe
+        .modal-footer
+          %button.btn.btn-danger{"data-dismiss" => "modal"} Закрыть
