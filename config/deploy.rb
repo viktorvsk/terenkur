@@ -5,7 +5,7 @@ lock '3.2.1'
 set :scm,               :git
 set :repo_url,          'git@bitbucket.org:victorvsk/terenkur.git'
 set :branch,            'master'
-set :rvm_type,            :user
+set :rvm_type,           :user
 set :rvm_ruby_version,  '2.1.5'
 set :user,              'vvsk'
 set :application,       'terenkur-new'
@@ -27,33 +27,15 @@ set :assets_roles, [:all]
 # Additional tasks
 # =========================
 set :default_env, { rvm_bin_path: '~/.rvm/bin' }
+
+
 namespace :deploy do
-
-  task :restart do
-    invoke 'unicorn:legacy_restart'
-  end
-
-  desc 'Setup'
-  task :setup do
-    on roles(:all) do
-      execute "mkdir -p #{shared_path}/config/"
-      execute "mkdir -p #{shared_path}/socket/"
-      upload!('shared/database.yml', "#{shared_path}/config/database.yml")
-      upload!('shared/secrets.yml', "#{shared_path}/config/secrets.yml")
-      within release_path do
-        with rails_env: fetch(:rails_env) do
-          execute :rake, "db:create"
-        end
-      end
-    end
-  end
 
   desc "Start unicorn"
   task :start do
     on roles(:all) do
-      within release_path do
-        execute "unicorn -c config/unicorn.rb  "
-      end
+      execute "bundle exec unicorn -c #{fetch(:unicorn_conf)} -E #{fetch(:rails_env)}"
+      #execute "if [ -f #{fetch(:unicorn_pid)} ] && [ -e /proc/$(cat #{fetch(:unicorn_pid)}) ]; then kill -USR2 `cat #{fetch(:unicorn_pid)}`; else cd #{fetch(:deploy_to)}/current && bundle exec unicorn -c #{fetch(:unicorn_conf)} -E #{fetch(:rails_env)} -D; fi"
     end
   end
 
@@ -76,7 +58,7 @@ namespace :deploy do
   end
 
   # task :restart do
-  #   run "if [ -f #{unicorn_pid} ] && [ -e /proc/$(cat #{unicorn_pid}) ]; then kill -USR2 `cat #{unicorn_pid}`; else cd #{deploy_to}/current && bundle exec unicorn -c #{unicorn_conf} -E #{rails_env} -D; fi"
+  #   run
   # end
   # task :start do
   #   run "cd #{current_release} && bundle exec unicorn -c #{unicorn_conf} -E #{rails_env} -D"
@@ -117,9 +99,9 @@ namespace :deploy do
 
   # after :updating, :symlink
 
-  before :setup, :starting
-  before :setup, :updating
-  before :setup, :install
+  # before :setup, :starting
+  # before :setup, :updating
+  # before :setup, :install
 
   before 'deploy:assets:precompile', :disable_active_admin
   after 'deploy:assets:precompile', :enable_active_admin
