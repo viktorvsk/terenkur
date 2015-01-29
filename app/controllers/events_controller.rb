@@ -1,8 +1,8 @@
 class EventsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show, :create, :search, :register_and_order]
+  before_action :authenticate_user!, except: [:index, :show, :create, :search, :register_and_order, :new]
   before_action :set_event, only: [:show, :edit, :update, :destroy, :take_part, :create_comment]
   load_and_authorize_resource
-  skip_authorize_resource :only => [:search, :register_and_order]
+  skip_authorize_resource :only => [:search, :register_and_order, :new]
 
   # GET /events
   def index
@@ -34,6 +34,7 @@ class EventsController < ApplicationController
 
   # GET /events/new
   def new
+    redirect_to new_user_path unless current_user
     @event = Event.new
   end
 

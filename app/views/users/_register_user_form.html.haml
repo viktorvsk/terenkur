@@ -1,0 +1,12 @@
+- if user.errors.any?
+  #error_explanation.alert.alert-danger
+    %h2= "#{user.errors.count} #{Russian::pluralize(user.errors.count, "ошибка", "ошибки", "ошибок")}  возникла при регистрации."
+    %ul
+      - user.errors.full_messages.each do |msg|
+        %li= msg
+= form_for user, url: register_users_path do |f|
+  .form-group
+    = f.label :email
+    = f.email_field :email, class: 'form-control', required: true, placeholder: "Введите свой Email"
+  .actions.text-right
+    = f.submit "Зарегистрироваться", class: 'btn btn-info'

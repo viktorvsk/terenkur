@@ -30,6 +30,22 @@ class UsersController < ApplicationController
     @clients = current_user.clients.page(params[:page])
   end
 
+  def register
+    password = Devise.friendly_token.first(8)
+    @user = User.new(email: params[:user][:email], password: password)
+    if @user.save
+      sign_in @user
+      redirect_to edit_user_path(@user), flash: { notice: "Вы успешно зарегистрировались. Ваш пароль: #{password}. Запишите его, а лучше поменяйте его прямо сейчас." }
+    else
+      render :new
+    end
+
+  end
+
+  def new
+    @user = User.new
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -42,4 +58,5 @@ class UsersController < ApplicationController
       to_permit.delete(:password) unless params[:user][:password].present?
       params.require(:user).permit(*to_permit)
     end
+
 end

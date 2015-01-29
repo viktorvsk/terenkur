@@ -13,7 +13,7 @@ ActiveAdmin.register Conf do
   form do |f|
     f.inputs t("conf.#{f.object.var}") do
       f.input :var
-      if f.object.var.in?(%w{popup.body})
+      if f.object.var.in?(%w{popup.body welcome.message})
         f.cktext_area :val
       else
         f.input :val
