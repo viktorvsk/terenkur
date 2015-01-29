@@ -147,8 +147,11 @@ namespace :deploy do
   after :finishing, :cleanup
   after :finishing, :restart
 
-  before 'assets:precompile', 'active_admin:disable'
-  after 'assets:precompile', 'active_admin:enable'
+  #before 'assets:precompile', 'active_admin:disable'
+  #after 'assets:precompile', 'active_admin:enable'
+
+  before 'deploy:migrate', 'active_admin:disable'
+  after 'deploy:migrate', 'active_admin:enable'
 
   after 'publishing', :restart
 
