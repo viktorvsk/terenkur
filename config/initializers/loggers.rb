@@ -6,3 +6,4 @@ LowMembersLog             = Logger.new("#{Rails.root}/log/low_members.log")
 
 Browserlog.config.allowed_log_files << %w[failed_events low_members slow_images withot_dates wrong_dates]
 Browserlog.config.allowed_log_files.flatten!
+Browserlog.config.allow_production_logs = true
