@@ -12,6 +12,12 @@
         = link_to t("cities.#{event.city.permalink}.gen"), search_path(city: event.city.permalink)
       = link_to "Похожие события", search_path(city: event.city.permalink, type: event.event_type.permalink), class: 'btn btn-default shadow-z-1'
       = render 'shared/take_part', event: event
+    .col-xs-12
+      .text-right
+        = link_to do user_path(event.user)
+          = image_tag(event.user.avatar_preview(:thumb), class: 'img-circle', size: '48x48')
+          %br/
+          = event.user.name
 - if @images.present?
   %hr/
   %h2 Галерея

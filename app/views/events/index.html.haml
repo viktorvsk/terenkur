@@ -1,14 +1,13 @@
 - content_for :top_background_content do render 'events_search' end
 - content_for :title do "Все события в твоем городе" end
 
-%article
-  %header
-    %h1 Добро пожаловать в Теренкур
-  %section
-    .jumbotron
-      %p Мы знаем о всех событиях в твоем городе.
-      %p Не знаешь, куда сходить с девушкой? Спроси у нас.
-      %p Где провести выходные с семьей?
+- if Conf['welcome.header'] and Conf['welcome.message']
+  %article
+    %header
+      %h1= Conf['welcome.header']
+    %section
+      .jumbotron
+        = Conf['welcome.message'].html_safe
 - if @event.present?
   %article
     %header
