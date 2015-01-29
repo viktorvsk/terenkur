@@ -14,7 +14,7 @@
       = render 'shared/take_part', event: event
     .col-xs-12
       .text-right
-        = link_to do user_path(event.user)
+        = link_to user_path(event.user) do
           = image_tag(event.user.avatar_preview(:thumb), class: 'img-circle', size: '48x48')
           %br/
           = event.user.name

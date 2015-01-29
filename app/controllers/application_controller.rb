@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
     if (request.referer.in?(sign_in_urls))
       env['omniauth.origin'] || request.env['omniauth.origin'] || stored_location_for(resource) || getting_started_path || root_path
     else
-      request.referer
+      request.referer || root_path
     end
   end
 
