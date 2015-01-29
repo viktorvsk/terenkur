@@ -8,6 +8,7 @@ ActiveAdmin.register User do
     column "Информация", :info do |user|
       [
         user.name,
+        user.authentication_token,
         user.email,
         user.phone,
         "Событий: #{user.events.count}",

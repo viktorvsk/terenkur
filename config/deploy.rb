@@ -29,6 +29,90 @@ set :assets_roles, [:all]
 # set :default_env, { rvm_bin_path: '~/.rvm/bin' }
 # set :default_env, { path: "~/.rvm/gems/ruby-2.1.5@default_env/bin:~/.rvm/bin:$PATH" }
 
+namespace :db do
+  # desc 'DB reset'
+  # task :reset do
+  #   on roles(:all) do
+  #     within release_path do
+  #       with rails_env: 'production' do
+
+  #         invoke 'active_admin:disable'
+  #         begin
+  #           execute :bundle, "exec rake db:reset"
+  #         ensure
+  #           invoke 'active_admin:enable'
+  #         end
+
+  #       end
+  #     end
+  #   end
+  # end
+
+  desc 'DB seed'
+  task :seed do
+    on roles(:all) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :bundle, "exec rake db:seed"
+        end
+      end
+    end
+  end
+
+  desc 'DB migrate'
+  task :migrate do
+    on roles(:all) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+
+          invoke 'active_admin:disable'
+          begin
+            execute :bundle, "exec rake db:migrate"
+          ensure
+            invoke 'active_admin:enable'
+          end
+
+        end
+      end
+    end
+  end
+
+  desc 'DB rollback'
+  task :rollback do
+    on roles(:all) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+
+          invoke 'active_admin:disable'
+          begin
+            execute :bundle, "exec rake db:rollback"
+          ensure
+            invoke 'active_admin:enable'
+          end
+
+        end
+      end
+    end
+  end
+end
+
+namespace "active_admin" do
+  desc 'Disable Active Admin'
+  task :disable do
+    on roles(:all) do
+      within release_path do
+        execute "mv #{release_path}/app/admin/ #{release_path}/admin/"
+      end
+    end
+  end
+
+  desc 'Enable Active Admin'
+  task :enable do
+    on roles(:all) do
+      execute "mv #{release_path}/admin/ #{release_path}/app/admin/"
+    end
+  end
+end
 
 namespace :deploy do
 
@@ -58,28 +142,15 @@ namespace :deploy do
     end
   end
 
-  desc 'Disable Active Admin'
-  task :disable_active_admin do
-    on roles(:all) do
-      within release_path do
-        execute "mv #{release_path}/app/admin/ #{release_path}/admin/"
-      end
-    end
-  end
 
-  desc 'Enable Active Admin'
-  task :enable_active_admin do
-    on roles(:all) do
-      execute "mv #{release_path}/admin/ #{release_path}/app/admin/"
-    end
-  end
 
   after :finishing, :cleanup
   after :finishing, :restart
 
-  before 'deploy:assets:precompile', :disable_active_admin
-  after 'deploy:assets:precompile', :enable_active_admin
+  before 'assets:precompile', 'active_admin:disable'
+  after 'assets:precompile', 'active_admin:enable'
 
-  after 'deploy:publishing', :restart
+  after 'publishing', :restart
 
 end
+
