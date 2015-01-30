@@ -20,7 +20,7 @@ class EventsController < ApplicationController
       days_name_eq: params[:date],
       name_cont: params[:name]
     }
-    @all_events             = Event.real.actual.ransack(q).result.order('days.name').to_a.uniq
+    @all_events             = Event.real.actual.ransack(q).result.order('RANDOM()').to_a.uniq
     @events                 = Kaminari.paginate_array(@all_events).page(params[:page])
     @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
     @event_types_selection  = EventType.order(:name).all.map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]

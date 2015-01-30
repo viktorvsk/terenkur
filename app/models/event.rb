@@ -63,11 +63,22 @@ class Event < ActiveRecord::Base
 
         events.each do |e|
           if event = Event.where(name: e['name']).first
-            if event.user.admin?
-              event.images.destroy_all
-              updated_events << event if event.update(e) # Log error here
+            if event.user == owner
+              #event.images.destroy_all
+              e.delete('image')
+              e.delete('images')
+              e.delete(:images)
+              e.delete(:image)
+              event.event_type  = '' unless event.event_type.present?
+              event.price       = '' unless event.price.present?
+              event.city        = '' unless event.city.present?
+              begin
+                updated_events << event if event.update(e)
+              rescue ActiveRecord::RecordInvalid => ex
+                FailedEventsLogger.error("Событие #{event.name} не обновлено: #{ex.class}: #{ex.message}")
+              end
             else
-              # and log error
+              FailedEventsLogger.error("Попытка обновить чужое событие: #{event.name} от имени #{owner.email}")
             end
             next
           else
@@ -221,7 +232,7 @@ class Event < ActiveRecord::Base
 
     def price_from_content
       return unless content.present?
-      currencies = %w{грн гр гривен uah руб рубл. грв грвн ₴ \$}.join('|')
+      currencies = %w{грн гр гривен uah руб рубл. грв грвн ₴ \$ uah грн\. гривень грвн\. грв\.}.join('|')
       prices = self.content.mb_chars.downcase.to_s.delete(" ").scan(/(\d+)(?:#{currencies})/).flatten.map(&:to_i).sort
       prices.count > 1 ? [prices.first, prices.last] : [prices.first]
     end
