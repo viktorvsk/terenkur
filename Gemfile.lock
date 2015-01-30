@@ -126,6 +126,7 @@ GEM
       responders
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
+    dynamic_sitemaps (2.0.0)
     erb2haml (0.1.5)
       html2haml
     erubis (2.7.0)
@@ -381,6 +382,7 @@ DEPENDENCIES
   coffee-rails
   colorized
   devise
+  dynamic_sitemaps
   erb2haml
   fog (= 1.24.0)
   haml-rails

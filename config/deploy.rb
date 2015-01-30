@@ -147,13 +147,30 @@ namespace :deploy do
   after :finishing, :cleanup
   after :finishing, :restart
 
-  #before 'assets:precompile', 'active_admin:disable'
-  #after 'assets:precompile', 'active_admin:enable'
-
   before 'deploy:migrate', 'active_admin:disable'
   after 'deploy:migrate', 'active_admin:enable'
 
   after 'publishing', :restart
+  after 'publishing', 'sitemap:generate'
+  after 'publishing', 'sitemap:symlink'
 
 end
 
+namespace :sitemap do
+  desc "Generate Sitemap"
+  task :generate do
+    on roles(:all) do
+      within release_path do
+        execute :rake, 'sitemap:generate'
+      end
+    end
+  end
+
+  desc "Symlink Sitemap"
+  task :symlink do
+    on roles(:all) do
+      execute "rm -f #{release_path}/public/sitemap.xml"
+      execute "ln -s #{release_path}/public/sitemaps/sitemap.xml #{release_path}/public/sitemap.xml"
+    end
+  end
+end

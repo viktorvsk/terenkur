@@ -36,6 +36,7 @@ gem 'browserlog', github: 'victorvsk/browserlog'
 gem 'rails_db_dump'
 gem 'momentjs-rails', '~> 2.5.0'
 gem 'high_voltage', '~> 2.2.1'
+gem "dynamic_sitemaps"
 # gem 'browser-log', '0.0.2'
 
 gem 'sass-rails', '~> 4.0.3'
