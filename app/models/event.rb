@@ -172,7 +172,10 @@ class Event < ActiveRecord::Base
       EventType.find(value)
     elsif value and t = EventType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
       t
-    elsif value and t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
+    #elsif value and t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
+    elsif  value and rel = EventType.where("meta_type ~* ?", "(\n|^)(\s+?)?(#{value})(\r\n|\n|$)(\s+?)?") and rel.present?
+      # log if rel.count > 1
+      t = rel.first
       t.event_type
     end
 

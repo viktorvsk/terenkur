@@ -114,6 +114,28 @@ namespace "active_admin" do
   end
 end
 
+
+namespace :sitemap do
+  desc "Generate Sitemap"
+  task :generate do
+    on roles(:all) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, 'sitemap:generate'
+        end
+      end
+    end
+  end
+
+  desc "Symlink Sitemap"
+  task :symlink do
+    on roles(:all) do
+      execute "rm -f #{release_path}/public/sitemap.xml"
+      execute "ln -s #{release_path}/public/sitemaps/sitemap.xml #{release_path}/public/sitemap.xml"
+    end
+  end
+end
+
 namespace :deploy do
 
   desc "Start unicorn"
@@ -154,23 +176,4 @@ namespace :deploy do
   after 'publishing', 'sitemap:generate'
   after 'publishing', 'sitemap:symlink'
 
-end
-
-namespace :sitemap do
-  desc "Generate Sitemap"
-  task :generate do
-    on roles(:all) do
-      within release_path do
-        execute :rake, 'sitemap:generate'
-      end
-    end
-  end
-
-  desc "Symlink Sitemap"
-  task :symlink do
-    on roles(:all) do
-      execute "rm -f #{release_path}/public/sitemap.xml"
-      execute "ln -s #{release_path}/public/sitemaps/sitemap.xml #{release_path}/public/sitemap.xml"
-    end
-  end
 end

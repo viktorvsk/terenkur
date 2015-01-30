@@ -36,6 +36,6 @@
   <%= render 'shared/modals' %>
   <%= javascript_include_tag 'application' %>
   <%= render 'shared/popup' %>
-  <%= render 'shared/vk_public', widget_id: @city.vk_public_url if @city.present? %>
+  <%= render 'shared/vk_public', widget_id: @city.vk_public_url if @city.present? and @city.vk_public_url.present? %>
 </body>
 </html>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150124155051) do
+ActiveRecord::Schema.define(version: 20150130222113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 20150124155051) do
     t.string   "keywords",   default: ""
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "meta_type"
   end
 
   add_index "event_types", ["keywords"], name: "index_event_types_on_keywords", using: :btree
