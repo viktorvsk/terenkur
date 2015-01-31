@@ -2,12 +2,13 @@
   .col-xs-4.text-center.col-sm-2.col-md-1
     = link_to user_path(comment.user) do
       = comment.user.name
-      = image_tag(comment.user.avatar || comment.user.avatar, class: 'img-responsive')
+      = image_tag(comment.user.avatar || comment.user.avatar_preview, class: 'img-responsive')
   .col-xs-8.col-sm-10.col-md-11
-    .text-right
-      = link_to comment_event_path(event, comment), method: :delete do
-        %i.btn.btn-fab.btn-fab-mini.btn-danger.btn-sm
-          %i.mdi-content-clear
+    - if can?(:destroy, comment)
+      .text-right
+        = link_to comment_event_path(event, comment), method: :delete do
+          %i.btn.btn-fab.btn-fab-mini.btn-danger.btn-sm
+            %i.mdi-content-clear
     %h6
       = I18n.localize(comment.created_at, format: "%e %b, %H:%M")
     = comment.comment
