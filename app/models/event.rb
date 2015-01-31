@@ -176,7 +176,7 @@ class Event < ActiveRecord::Base
     elsif  value and rel = EventType.where("meta_type ~* ?", "(\n|^)(\s+?)?(#{value})(\r\n|\n|$)(\s+?)?") and rel.present?
       # log if rel.count > 1
       t = rel.first
-      t.event_type
+      t
     end
 
     et = guess_type if et.nil?
