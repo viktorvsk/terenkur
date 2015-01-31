@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show, :create, :search, :register_and_order, :new]
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :take_part, :create_comment]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :take_part, :create_comment, :destroy_comment]
   load_and_authorize_resource
   skip_authorize_resource :only => [:search, :register_and_order, :new]
 
@@ -53,20 +53,6 @@ class EventsController < ApplicationController
     end
   end
 
-  def dates
-    if params[:day] and params[:day][:date].present?
-      @dates = Day.parse(params[:day][:date])
-      if @dates.kind_of? (Array)
-        @dates.map!{ |d|
-          I18n.localize(Date.parse(d), format: "%d %b")
-        }
-        @dates = @dates.join(", ")
-      else
-        @dates = I18n.localize(Date.parse(@dates), format: "%d %b")
-      end
-    end
-  end
-
   def take_part
     if current_user.orders.create(event: @event)
       redirect_to event_path(@event), flash: { notice: "Вы успешно подали заявку на участие в #{@event.name}" }
@@ -91,6 +77,12 @@ class EventsController < ApplicationController
     else
       redirect_to :back, flash: { error: "Произошла ошибка. Комментарий не сохранен." }
     end
+  end
+
+  def destroy_comment
+    comment = @event.comments.find(params[:comment_id])
+
+    redirect_to :back, notice: 'Комментарий успешно удален' if comment.destroy
   end
 
   # PATCH/PUT /events/1

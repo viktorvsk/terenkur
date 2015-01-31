@@ -19,7 +19,8 @@ Rails.application.routes.draw do
   get 'about' => 'high_voltage/pages#show', id: 'about'
   get 'partners' => 'high_voltage/pages#show', id: 'partners'
   get 'anons' => 'high_voltage/pages#show', id: 'anons'
-
+  get 'sitemap.xml' => 'application#sitemap'
+  get 'robots.txt' => 'application#robots'
 
   mount Ckeditor::Engine => '/ckeditor'
   devise_for :users, :controllers => { :omniauth_callbacks => "omniauth_callbacks" }
@@ -33,10 +34,11 @@ Rails.application.routes.draw do
     member do
       post :take_part, to: 'events#take_part', as: :order
       post :comments, to: 'events#create_comment', as: :comments
+      delete 'comments/:comment_id', to: 'events#destroy_comment', as: :comment
     end
   end
 
-  get :dates, to: 'events#dates'
+  get :tests, to: 'tests#root'
 
   get '/(:city)/(:date)/(:type)', to: 'events#search', constraints: search_constraints, as: :search
   get '/(:city)/(:type)', to: 'events#search', constraints: search_constraints

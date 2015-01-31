@@ -1,0 +1,24 @@
+%h1= t('events.h1.dates')
+= form_tag :tests, url: :tests, method: :get do
+  .jumbotron
+    .row
+      .col-md-4
+        .form-group
+          = label_tag 'Дата'
+          = text_field_tag :date, params[:date], class: 'form-control', value: params[:date]
+        .form-group
+          = label_tag 'Текст'
+          = text_area_tag :text, params[:text], class: 'form-control', value: params[:text]
+        %br/
+      .col-md-8
+        %h3 Даты
+        %pre#date-result
+          = @dates
+        %h3 Цена
+        %pre#price-result
+          = @price || "Ошибка"
+        %h3 Тип
+        %pre#type-result
+          = @type || "Ошибка"
+    .text-right
+      = submit_tag "Проверить", class: 'btn btn-info'

@@ -24,7 +24,7 @@
       .panel-body
         .col-xs-12
           - if @event.comments.present?
-            = render(@event.comments)
+            = render(@event.comments, event: @event)
           - else
             Никто еще не прокомментировал это мероприятие...
             %hr/

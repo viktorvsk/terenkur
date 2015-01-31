@@ -39,6 +39,7 @@ City.create([
     Conf['deletions.2']       = 'Показать полностью...'
     Conf['welcome.header']    = 'Добро пожаловать в Теренкур'
     Conf['welcome.message']   = '<p>Мы знаем все о событиях</p>'
+    Conf['robots']            = '#'
     User.create(
       email: 'robot@terenkur.com',
       name: 'Роботос',

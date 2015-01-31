@@ -231,24 +231,23 @@ class Event < ActiveRecord::Base
 
   ### End of virtual attributes ###
 
-  private
 
-    def price_from_content
-      return unless content.present?
-      currencies = %w{грн гр гривен uah руб рубл. грв грвн ₴ \$ uah грн\. гривень грвн\. грв\.}.join('|')
-      prices = self.content.mb_chars.downcase.to_s.delete(" ").scan(/(\d+)(?:#{currencies})/).flatten.map(&:to_i).sort
-      prices.count > 1 ? [prices.first, prices.last] : [prices.first]
-    end
+  def price_from_content
+    return unless content.present?
+    currencies = %w{грн гр гривен uah руб рубл. грв грвн ₴ \$ uah грн\. гривень грвн\. грв\.}.join('|')
+    prices = self.content.mb_chars.downcase.to_s.delete(" ").scan(/(\d+)(?:#{currencies})/).flatten.map(&:to_i).sort
+    prices.count > 1 ? [prices.first, prices.last] : [prices.first]
+  end
 
-    def event_type_from_content
-      return unless content.present?
-      keywords  = EventType.keywords.join('|')
-      results   = content.mb_chars.downcase.to_s.scan(/#{keywords}/)
-      counts    = Hash.new(0)
-      results.each { |keyword| counts[keyword] += 1 }
-      event_type = counts.max_by{ |k| k[1] }.try(:first)
-      return unless event_type
-      EventType.where('keywords LIKE ?', "%#{event_type}%").first
-    end
+  def event_type_from_content
+    return unless content.present?
+    keywords  = EventType.keywords.join('|')
+    results   = content.mb_chars.downcase.to_s.scan(/#{keywords}/)
+    counts    = Hash.new(0)
+    results.each { |keyword| counts[keyword] += 1 }
+    event_type = counts.max_by{ |k| k[1] }.try(:first)
+    return unless event_type
+    EventType.where('keywords LIKE ?', "%#{event_type}%").first
+  end
 
 end

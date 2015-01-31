@@ -3,6 +3,15 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  def sitemap
+    DynamicSitemaps::Generator.new.generate
+    render :file=>Rails.root.join('public', 'sitemaps', 'sitemap.xml'), :content_type => 'application/xml', layout: false
+  end
+
+  def robots
+    render text: Conf['robots'], :content_type => 'text/plain', layout: false
+  end
+
   def authenticate_admin_user!
     redirect_to root_path, flash: { error: t('errors.access.denied') } and return if user_signed_in? && !current_user.admin?
     authenticate_user!
