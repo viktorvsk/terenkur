@@ -17,4 +17,6 @@
 /public/uploads/**/*
 /shared
 /config/database.yml
+/config/secrets.yml
 /public/sitemaps
+/public/assets

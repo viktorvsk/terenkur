@@ -81,6 +81,7 @@ class EventsController < ApplicationController
 
   def destroy_comment
     comment = @event.comments.find(params[:comment_id])
+    authorize! :destroy, comment
 
     redirect_to :back, notice: 'Комментарий успешно удален' if comment.destroy
   end

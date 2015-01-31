@@ -42,7 +42,7 @@ ActiveAdmin.register Event do
       f.input :teaser
       f.input :min_price
       f.input :max_price
-      f.cktext_area :content, input_html: { type: :textarea }
+      f.cktext_area :content, input_html: { type: :textarea }, :ckeditor => {:toolbar => 'mini', language: 'ru'}
     end
 
     f.actions

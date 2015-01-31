@@ -14,7 +14,7 @@ ActiveAdmin.register Conf do
     f.inputs t("conf.#{f.object.var}") do
       f.input :var
       if f.object.var.in?(%w{popup.body welcome.message})
-        f.cktext_area :val
+        f.cktext_area :val, :ckeditor => {:toolbar => 'mini', language: 'ru'}
       elsif f.object.var.in?(%w{robots})
         f.input :val, as: :text
       else

@@ -13,7 +13,7 @@
       .col-md-8
         %h3 Даты
         %pre#date-result
-          = @dates
+          = @dates || "Ошибка"
         %h3 Цена
         %pre#price-result
           = @price || "Ошибка"
