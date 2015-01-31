@@ -47,7 +47,7 @@
                   =link_to destroy_user_session_path, method: :delete do
                     %i.mdi-maps-directions-walk
                     = t('menu.logout')
-          %li.visible-xs=link_to t('menu.profile'), edit_user_path(current_user)
+          %li.visible-xs=link_to t('menu.profile'), user_path(current_user)
           %li.visible-xs=link_to t('menu.clients'), orders_user_path(current_user)
           %li.visible-xs=link_to t('menu.edit_profile'), edit_user_path(current_user)
           %li.visible-xs=link_to t('menu.add_event'), new_event_path
