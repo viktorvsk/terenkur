@@ -8,4 +8,13 @@ module ApplicationHelper
     html.html_safe
   end
 
+  def lazy_image_tag(source, options={})
+    if options[:class].present?
+      options[:class] << ' lazy'
+    else
+      options[:class] = 'lazy'
+    end
+    options['data-original'] = source
+    image_tag('/spinner.gif', options)
+  end
 end

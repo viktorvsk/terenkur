@@ -19,14 +19,19 @@
             = text_field_tag :name, params[:name], class: 'form-control empty', placeholder: "Фильтр по имени"
             %span.material-input
       %ul.nav.navbar-nav.navbar-right
-        - if current_user.try(:admin?)
-          %li=link_to t('menu.admin'), admin_root_path
+
         - if current_user
           %li.hidden-xs
             .dropdown.user-icon.text-center
               #user-icon-dropdown.dropdown-toggle{ 'data-toggle' => 'dropdown' }
-                = image_tag(current_user.avatar.presence || current_user.avatar_preview)
+                = lazy_image_tag(current_user.avatar_preview)
               %ul.dropdown-menu{ 'aria-labelledby' => 'user-icon-dropdown' }
+                - if current_user.admin?
+                  %li
+
+                    =link_to admin_root_path do
+                      %i.mdi-action-stars
+                      = t('menu.admin')
                 %li
                   =link_to user_path(current_user) do
                     %i.mdi-action-account-circle
@@ -47,6 +52,8 @@
                   =link_to destroy_user_session_path, method: :delete do
                     %i.mdi-maps-directions-walk
                     = t('menu.logout')
+          - if current_user.admin?
+            %li.visible-xs=link_to t('menu.admin'), admin_root_path
           %li.visible-xs=link_to t('menu.profile'), user_path(current_user)
           %li.visible-xs=link_to t('menu.clients'), orders_user_path(current_user)
           %li.visible-xs=link_to t('menu.edit_profile'), edit_user_path(current_user)

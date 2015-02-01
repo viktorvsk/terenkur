@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   end
 
   def avatar_preview(type=nil)
-    avatar ? avatar.attachment.url(type) : 'user-placeholder.png'
+    avatar ? avatar.attachment.url(type) : '/user-placeholder.png'
   end
 
 end

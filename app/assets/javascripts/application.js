@@ -24,8 +24,14 @@
 //= require users
 
 $(document).ready(function(){
+  $(window).load(function(){
+    $('html, body').trigger("scroll");
+  });
   $.material.init();
-  $('img.lazy').lazyload();
+  $('img.lazy').lazyload({
+    effect: 'fadeIn',
+    container: $('body')
+  });
   $('.dropdown-toggle').dropdown();
   $('#top-nav li a[href="'+ window.location.pathname +'"]').parent().addClass('active')
   $('.message .close').on('click', function() {

@@ -6,8 +6,7 @@
       = event.event_type.name
       = t("cities.#{event.city.permalink}.gen")
     .event-item-body.col-xs-12
-      =# link_to image_tag('/spinner.gif', class: 'img-responsive shadow-z-2 lazy', 'data-original' => image_path(event.preview)), event_path(event)
-      = link_to image_tag(event.preview, class: 'img-responsive shadow-z-2'), event_path(event)
+      = link_to lazy_image_tag(event.preview, class: 'img-responsive shadow-z-2'), event_path(event)
       .col-sm-12
         .text-center
           %header
@@ -18,6 +17,6 @@
             Адрес:
             = address(event.address)
           = render 'shared/take_part', event: event
-        %article.teaser= event.teaser
+        %article.teaser= event.text_teaser
         .text-center
           %small= render event.days.actual, city: event.city

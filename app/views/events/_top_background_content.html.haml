@@ -2,7 +2,7 @@
   .col-xs-12
     .col-sm-2
       = link_to event.preview, class: 'event-main-image' do
-        = image_tag event.preview(:thumb), class: 'img-responsive shadow-z-2'
+        = lazy_image_tag event.preview(:thumb), class: 'img-responsive shadow-z-2'
     .col-xs-10
       = render 'event_controls', event: event if can?(:manage, event)
       = render event.days.actual, city: event.city

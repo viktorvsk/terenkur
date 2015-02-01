@@ -23,15 +23,20 @@ class Event < ActiveRecord::Base
     permalink
   end
 
-
   def preview(type=nil)
-    images.present? ? images.first.attachment.url(type) : 'event-placeholder.png'
+    images.present? ? images.first.attachment.url(type) : '/event-placeholder.png'
   end
 
   def display_content
     text = self.content
     Conf.get_all('deletions').values.each{ |v| text.gsub!(v, '') } if text.present?
     Sanitize.fragment(text, Sanitize::Config::BASIC).html_safe
+  end
+
+  def text_teaser
+    text = self.teaser
+    Conf.get_all('deletions').values.each{ |v| text.gsub!(v, '') } if text.present?
+    Sanitize.fragment(text, Sanitize::Config::RESTRICTED).html_safe
   end
 
   ### For API ###

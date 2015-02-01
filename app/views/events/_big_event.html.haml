@@ -2,8 +2,7 @@
   .row
     .col-xs-12
       .col-sm-4.text-center
-        =# link_to (image_tag '/spinner.gif', class: 'img-responsive shadow-z-2 lazy', 'data-original' => image_path(event.preview)), event_path(event)
-        = link_to image_tag(event.preview, class: 'img-responsive shadow-z-2'), event_path(event)
+        = link_to lazy_image_tag(event.preview, class: 'img-responsive shadow-z-2'), event_path(event)
         = render 'shared/take_part', event: event
         %section.event-details.text-left.row
           .col-xs-12
