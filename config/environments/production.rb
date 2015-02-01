@@ -69,8 +69,8 @@ Rails.application.configure do
     :port                   => 587,
     :domain                 => "new.terenkur.com",
     :authentication         => :plain,
-    :user_name              => ENV["GMAIL_USERNAME"],
-    :password               => ENV["GMAIL_PASSWORD"],
+    :user_name              => Rails.application.secrets.gmail_username,
+    :password               => Rails.application.secrets.gmail_password,
     :enable_starttls_auto   => true
   }
 
