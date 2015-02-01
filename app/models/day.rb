@@ -1,7 +1,7 @@
 class Day < ActiveRecord::Base
   scope :actual,  -> { where('name >= ?', Date.today) }
   scope :today,   -> { where('name = ?', Date.today) }
-  validates :name, presence: true, uniqueness: true, format: { with: /\A201[4567][\.\-\/](0?[1-9]|1[012])[\.\-\/](0?[1-9]|[12][0-9]|3[01])\z/ }
+  validates :name, presence: true, uniqueness: true, format: { with: /\A20\d\d[\.\-\/](0?[1-9]|1[012])[\.\-\/](0?[1-9]|[12][0-9]|3[01])\z/ }
   has_many :event_days
   has_many :events, through: :event_days
   NORMALIZERS = {

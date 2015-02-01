@@ -1,5 +1,5 @@
 ActiveAdmin.register Event do
-  permit_params :name, :permalink, :user_id, :city_id, :address, :content, :teaser, :min_price, :max_price
+  permit_params :name, :permalink, :user_id, :city_id, :address, :content, :teaser, :min_price, :max_price, :event_type_id
   actions :all, except: [:show]
 
   menu priority: 3, label: proc{ t("active_admin.menu.events") }
@@ -37,6 +37,7 @@ ActiveAdmin.register Event do
       f.input :name, label: "Название"
       f.input :permalink, label: "Ссылка"
       f.input :user
+      f.input :event_type
       f.input :city
       f.input :address
       f.input :teaser

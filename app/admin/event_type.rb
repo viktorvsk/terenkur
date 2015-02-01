@@ -6,7 +6,7 @@ ActiveAdmin.register EventType do
 
   index do
     column "Название", :name do |event_type|
-      (content_tag(:b, event_type.name) + tag(:br) + content_tag(:i, event_type.event_meta_types.map(&:name).join(', '))).html_safe
+      (content_tag(:b, event_type.name) + tag(:br) + content_tag(:i, event_type.keywords.split("\n").join(','))).html_safe
     end
     column "Ссылка", :permalink
     actions
@@ -19,8 +19,8 @@ ActiveAdmin.register EventType do
     f.inputs "Тип события" do
       f.input :name, label: "Название"
       f.input :permalink, label: "Ссылка"
-      f.input :keywords, label: "Ключевые слова для определения типа", as: :text
-      f.input :meta_type, label: "Мета типы", as: :text
+      f.input :keywords, label: "Ключевые слова (для определения типа и мета-типа)", as: :text
+      #f.input :meta_type, label: "Мета типы", as: :text
     end
 
     f.actions

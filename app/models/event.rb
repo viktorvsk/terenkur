@@ -82,7 +82,12 @@ class Event < ActiveRecord::Base
             end
             next
           else
-            event = owner.events.new(e)
+            begin
+              event = owner.events.new(e)
+            rescue ActiveRecord::RecordInvalid => ex
+              FailedEventsLogger.error("#{ex.class}: #{ex.message} для #{e['name']}")
+              next
+            end
             event.event_type  = '' unless event.event_type.present?
             event.price       = '' unless event.price.present?
             event.city        = '' unless event.city.present?
@@ -173,7 +178,7 @@ class Event < ActiveRecord::Base
     elsif value and t = EventType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
       t
     #elsif value and t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
-    elsif  value and rel = EventType.where("meta_type ~* ?", "(\n|^)(\s+?)?(#{value})(\r\n|\n|$)(\s+?)?") and rel.present?
+    elsif  value and rel = EventType.where("keywords ~* ?", "(\n|^)(\s+?)?(#{value})(\r\n|\n|$)(\s+?)?") and rel.present?
       # log if rel.count > 1
       t = rel.first
       t
@@ -212,7 +217,11 @@ class Event < ActiveRecord::Base
     result = Day.parse(value)
     if result.present? and result != "Invalid date"
       to_assign = if result.kind_of?(String)
-        Day.where(name: result).first_or_create! # Log
+        begin
+          Day.where(name: result).first_or_create!
+        rescue ActiveRecord::RecordInvalid => ex
+          WrongDatesLog.error("#{self.name} имеет неверную дату: #{result}")
+        end
       else
         # Log invalid dates
         result = result.reject{ |d| d == "Invalid date" or not d.present? }
@@ -234,7 +243,7 @@ class Event < ActiveRecord::Base
 
   def price_from_content
     return unless content.present?
-    currencies = %w{грн гр гривен uah руб рубл. грв грвн ₴ \$ uah грн\. гривень грвн\. грв\.}.join('|')
+    currencies = %w{грн гр гривен uah руб рубл\. грв грвн ₴ \$ uah грн\. гривень грвн\. грв\. р р\. р рубл. грн. грвн.}.join('|')
     prices = self.content.mb_chars.downcase.to_s.delete(" ").scan(/(\d+)(?:#{currencies})/).flatten.map(&:to_i).sort
     prices.count > 1 ? [prices.first, prices.last] : [prices.first]
   end

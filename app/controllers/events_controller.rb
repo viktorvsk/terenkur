@@ -8,8 +8,8 @@ class EventsController < ApplicationController
   def index
     @event                  = Event.real.actual.order("RANDOM()").first
     @city                   = @event.try(:city)
-    @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
-    @event_types_selection  = EventType.all.order(:name).map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
+    @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Все города", nil]
+    @event_types_selection  = EventType.all.order(:name).map{ |t| [t.name, t.permalink] } << ["Все события", nil]
   end
 
   def search
