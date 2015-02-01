@@ -9,9 +9,8 @@
     <% end %>
   </title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport"           content="width=device-width, initial-scale=1" />
-  <meta name="description"        content= <%= yield :seo_description %> />
-  <meta name="keywords"           content= <%= yield :seo_keywords %> />
+  <meta name="description"        content=" <%= @seo_description || yield( :seo_description) %>" />
+  <meta name="keywords"           content=" <%= @seo_keywords || yield( :seo_keywords) %>" />
   <meta name="viewport"           content= "width=device-width, initial-scale=1" />
   <link href="/favicon.png"       rel="shortcut icon" />
   <%= csrf_meta_tags %>

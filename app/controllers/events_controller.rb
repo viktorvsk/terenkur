@@ -6,13 +6,17 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
+    descr                   = City.all.map{ |c| I18n.t("cities.#{c.permalink}.gen") }.join(", ")
     @event                  = Event.real.actual.order("RANDOM()").first
     @city                   = @event.try(:city)
     @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Все города", nil]
     @event_types_selection  = EventType.all.order(:name).map{ |t| [t.name, t.permalink] } << ["Все события", nil]
+    @seo_description        = "Теренкур. Мы знаем, куда пойти #{descr}"
+    @seo_keywords           = EventType.all.map{ |e| e.name }.join(', ') << " " << descr
   end
 
   def search
+    descr                   = City.all.map{ |c| I18n.t("cities.#{c.permalink}.gen") }.join(", ")
     @city = City.find_by_permalink(params[:city]) if params[:city]
     q = {
       city_permalink_eq: params[:city],
@@ -24,12 +28,16 @@ class EventsController < ApplicationController
     @events                 = Kaminari.paginate_array(@all_events).page(params[:page])
     @cities_selection       = City.all.order(:name).map{ |c| [c.name, c.permalink] } << ["Любой город", nil]
     @event_types_selection  = EventType.order(:name).all.map{ |t| [t.name, t.permalink] } << ["Любой тип", nil]
+    @seo_description        = "Теренкур. Мы знаем, куда пойти #{descr}"
+    @seo_keywords           = EventType.all.map{ |e| e.name }.join(', ') << " " << descr
   end
 
   # GET /events/1
   def show
     @city = @event.city
     @images = @event.images.where.not(id: @event.images.first)
+    @seo_description = @event.text_teaser
+    @seo_keywords = @event.event_type.keywords.split("\n").join(',')
   end
 
   # GET /events/new
