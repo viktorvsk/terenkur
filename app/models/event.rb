@@ -177,10 +177,7 @@ class Event < ActiveRecord::Base
       EventType.find(value)
     elsif value and t = EventType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
       t
-    #elsif value and t = EventMetaType.where("LOWER(name) = ?", value.mb_chars.downcase.strip.to_s).first
-    elsif  value and rel = EventType.where("keywords ~* ?", "(\n|^)(\s+?)?(#{value})(\r\n|\n|$)(\s+?)?") and rel.present?
-      # log if rel.count > 1
-      t = rel.first
+    elsif  value and t = EventType.find_by_keyword(value)
       t
     end
 
@@ -258,5 +255,74 @@ class Event < ActiveRecord::Base
     return unless event_type
     EventType.where('keywords LIKE ?', "%#{event_type}%").first
   end
+
+  def self.vk_to_events(events, city)
+    events.map do |event|
+      s = Time.at(event['start_date'].to_i).to_date.strftime("%d %b %Y")
+      e = Time.at(event['finish_date'].to_i).to_date.strftime("%d %b %Y")
+      date = "#{s} - #{e}"
+      r = {
+           "name"          => event['name'],
+           "content"       => event['description'],
+           "date"          => date,
+           "image"         => event['photo_big'],
+           "teaser"        => event['description'],
+           "city"          => city.name,
+           "event_type"    => event['event_type']
+          }
+      r['address'] = event['place']['address'] if event['place'].present?
+      r
+    end
+  end
+
+  def self.from_vk_by_words(words, city_id)
+    result  = []
+    words.each do |word|
+      url = "https://api.vk.com/method/groups.search?q=#{word}&access_token=#{Conf['vk.token']}&count=1000&future=1&city_id=#{city_id}&type=event"
+      url = URI.encode(url)
+      begin
+        response = RestClient.get(url)
+      rescue RestClient
+        print '-'
+        next
+      end
+      begin
+        response_json_events = JSON.parse(response)['response'][1..-1]
+      rescue NoMethodError
+        print '-'
+        next
+      end
+      response_json_events.map!{ |e| e['event_type'] = word; e }
+      result << response_json_events
+      print '+'
+      sleep 0.333
+    end
+    evs = result.flatten.select(&:present?).uniq{ |e| e['name'] }
+    ids = evs.map{ |e| e['gid'] }
+    result_events = []
+    ids.in_groups_of(500, false) do |ids_group|
+      i = ids_group.join(',')
+      resp = RestClient.post("https://api.vk.com/method/groups.getById",
+        group_ids: i,
+        fields: 'place,description,members_count,start_date,finish_date')
+      begin
+        result_events << JSON.parse(resp)['response']
+      rescue NoMethodError
+        print '-'
+        next
+      end
+      print '+'
+      sleep 0.333
+    end
+    result_events.flatten!
+    result_events.reject!{ |e| e['members_count'].to_i < 25 }
+    result_events.map do |e|
+      e['event_type'] = evs.detect{ |ev| ev['gid'] == e['gid'] }['event_type']
+      e
+    end
+
+    result_events
+  end
+
 
 end
