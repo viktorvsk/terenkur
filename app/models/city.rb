@@ -21,13 +21,20 @@ class City < ActiveRecord::Base
       url = URI.encode(url)
       begin
         response = RestClient.get(url)
-      rescue Exception
+      rescue RestClient
+        print '-'
         next
       end
-      response_json_events = JSON.parse(response)['response'][1..-1] rescue binding.pry
+      begin
+        response_json_events = JSON.parse(response)['response'][1..-1]
+      rescue NoMethodError
+        print '-'
+        next
+      end
       result << response_json_events
       print '+'
-      sleep 0.25
+      sleep 0.333
+
     end
     evs = result.flatten.select(&:present?).uniq{ |e| e['name'] }
     ids = evs.map{ |e| e['gid'] }
@@ -39,8 +46,13 @@ class City < ActiveRecord::Base
       resp = RestClient.post("https://api.vk.com/method/groups.getById",
         group_ids: i,
         fields: 'place,description,members_count,start_date,finish_date')
-      result_events << JSON.parse(resp)['response']
-      sleep 0.25
+      begin
+        result_events << JSON.parse(resp)['response']
+      rescue NoMethodError
+        print '-'
+        next
+      end
+      sleep 0.333
     end
 
     result_events.flatten!
