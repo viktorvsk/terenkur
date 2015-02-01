@@ -38,6 +38,7 @@ gem 'momentjs-rails', '~> 2.5.0'
 gem 'high_voltage', '~> 2.2.1'
 gem "dynamic_sitemaps"
 # gem 'browser-log', '0.0.2'
+gem 'rest_client'
 
 gem 'sass-rails', '~> 4.0.3'
 gem 'uglifier', '>= 1.3.0'
