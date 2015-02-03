@@ -1,5 +1,5 @@
 worker_processes 2
-app_path = '/home/vvsk/terenkur-new'
+app_path = '/home/vvsk/terenkur'
 working_directory "#{app_path}/current" # available in 0.94.0+
 
 # listen on both a Unix domain socket and a TCP port,

@@ -5,10 +5,12 @@ lock '3.2.1'
 set :scm,               :git
 set :repo_url,          'git@bitbucket.org:victorvsk/terenkur.git'
 set :branch,            'master'
-set :rvm_type,           :user
-set :rvm_ruby_version,  '2.1.5'
+set :rbenv_type,        :user
+set :rbenv_ruby,        '2.2.0'
+set :rbenv_map_bins,    %w{rake gem bundle ruby rails}
+set :rbenv_roles,       :all
 set :user,              'vvsk'
-set :application,       'terenkur-new'
+set :application,       'terenkur'
 set :deploy_to,         "/home/#{fetch(:user)}/#{fetch(:application)}"
 # output format
 set :format,            :pretty

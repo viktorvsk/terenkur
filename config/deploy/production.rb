@@ -10,4 +10,4 @@ set :unicorn_conf, File.join(current_path, 'config', 'unicorn', "#{fetch(:rails_
 
 # Extended Server Syntax
 # ======================
-server '54.68.36.220', roles: :all, user: fetch(:user)
+server '159.253.20.144', roles: :all, user: fetch(:user)
