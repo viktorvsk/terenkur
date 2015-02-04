@@ -15,6 +15,7 @@
   <link href="/favicon.png"       rel="shortcut icon" />
   <%= csrf_meta_tags %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= Conf['scripts.head'].html_safe %>
 </head>
 <body>
   <div class='site'>
@@ -36,5 +37,6 @@
   <%= javascript_include_tag 'application' %>
   <%= render 'shared/popup' %>
   <%= render 'shared/vk_public', widget_id: @city.vk_public_url if @city.present? and @city.vk_public_url.present? %>
+  <%= Conf['scripts.body'].html_safe %>
 </body>
 </html>

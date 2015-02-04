@@ -7,30 +7,14 @@ class Api::V1::EventsController < Api::V1::ApiController
       params[:groups].map{ |group| events << group[:events] }
       params[:events] = events.flatten
     end
-
-
-
     initial_events_count = params[:events].try(:count)
     params[:events] = [params[:events]] if params[:events].kind_of?(Hash)
-    params[:events].each do |e|
-      if e['image'].present?
-        url   = URI(URI.decode(e['image']))
-        e['image'] = url.host ? URI.encode(url.to_s) : "#{params[:base]}#{URI.encode(url.to_s)}"
-      end
-      if e['images'].present?
-        e['images'].map do |image|
-          url   = URI(URI.decode(image))
-          image = url.host ? URI.encode(url.to_s) : "#{params[:base]}#{URI.encode(url.to_s)}"
-        end
+    if params[:base]
+      params[:events].each do |e|
+        e['image'] = url_for(e['image']) if e['image'].present?
+        e['images'].map{ |image| url_for(image) } if e['images'].present?
       end
     end
-
-    params[:events] = params[:events].reject{ |e|
-      e['members'].present? and
-      e['members'].delete(' ').to_i < 25 and
-      LowMembersLog.info("#{e['name']} #{e['members']} участников")
-    }
-
     message = Event.create_or_update_from_api(event_params, current_user, initial_count: initial_events_count)
     success!(message)
   end
@@ -40,6 +24,12 @@ class Api::V1::EventsController < Api::V1::ApiController
     params.require(:events).map do |p|
      ActionController::Parameters.new(p.to_hash).permit(:teaser, :price, :date, :permalink, :address, :content, :city, :event_type, :name, :image, images: [])
     end
+  end
+
+  def url_for(url)
+    url = URI.encode(URI.decode(url))
+    url = URI.join(params[:base], url)
+    url.to_s
   end
 
 end
