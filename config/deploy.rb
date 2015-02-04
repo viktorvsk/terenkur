@@ -166,6 +166,16 @@ namespace :deploy do
     end
   end
 
+  desc "Setup"
+  task :setup do
+    on roles(:all) do
+      upload! 'shared/secrets.yml', "#{shared_path}/config/secrets.yml"
+      upload! 'shared/database.yml', "#{shared_path}/config/database.yml"
+      upload! 'shared/nginx.conf', "#{shared_path}/config/nginx.conf"
+      upload! 'shared/terenkur.conf', "#{shared_path}/config/terenkur.conf"
+    end
+  end
+
   after :finishing, :cleanup
   after :finishing, :restart
 

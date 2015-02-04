@@ -16,7 +16,7 @@ gem 'kaminari'
 
 # avatars and images
 gem 'mini_magick'
-gem 'fog', '1.24.0'
+#gem 'fog', '1.24.0'
 gem 'carrierwave'
 
 gem 'russian', '~> 0.6.0'
