@@ -15,7 +15,9 @@ end
 Rails.application.routes.draw do
   constraints admin_constraint do
     mount Browserlog::Engine => '/logs'
+    post 'events/parse_vk', as: :parse_vk
   end
+
   get 'about' => 'high_voltage/pages#show', id: 'about'
   get 'partners' => 'high_voltage/pages#show', id: 'partners'
   get 'anons' => 'high_voltage/pages#show', id: 'anons'
@@ -38,7 +40,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get :tests, to: 'tests#root'
+  get :tests, to: 'tests#root', as: :tests
 
   get '/(:city)/(:date)/(:type)', to: 'events#search', constraints: search_constraints, as: :search
   get '/(:city)/(:type)', to: 'events#search', constraints: search_constraints

@@ -24,6 +24,7 @@ gem 'ckeditor'
 gem 'sanitize'
 gem "rails-settings-cached", "0.4.1"
 gem 'acts_as_commentable'
+gem 'resque', '1.25.2'
 
 # Admin
 gem 'activeadmin', github: 'activeadmin'
@@ -37,7 +38,6 @@ gem 'rails_db_dump'
 gem 'momentjs-rails', '~> 2.5.0'
 gem 'high_voltage', '~> 2.2.1'
 gem "dynamic_sitemaps"
-# gem 'browser-log', '0.0.2'
 gem 'rest_client'
 
 gem 'sass-rails', '~> 4.0.3'

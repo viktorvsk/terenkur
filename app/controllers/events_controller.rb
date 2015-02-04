@@ -109,6 +109,11 @@ class EventsController < ApplicationController
     redirect_to events_url, notice: 'Событие успешно удалено.'
   end
 
+  def parse_vk
+    City.get_all_vk
+    redirect_to tests_path, notice: "ВКонтакте добавлен в обработку."
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_event

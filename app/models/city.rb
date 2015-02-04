@@ -3,11 +3,10 @@ class City < ActiveRecord::Base
   has_many :events, dependent: :destroy
 
   def self.get_all_vk
-    t1 = Time.now
-    res = all.map{ |c| c.get_vk_events }
-    t2 = Time.now
-    res << (t2 - t1)
-    res
+    all.map do |city|
+      city.async_get_vk_events
+    end
+
   end
 
   def get_vk_events
@@ -19,5 +18,9 @@ class City < ActiveRecord::Base
     evs     = Event.from_vk_by_words(words, city_id)
     evs     = Event.vk_to_events(evs, self)
     Event.create_or_update_from_api(evs, User.first, initial_count: evs.count)
+  end
+
+  def async_get_vk_events
+    Resque.enqueue(VkCityParser, self.id)
   end
 end

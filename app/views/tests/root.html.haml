@@ -22,3 +22,20 @@
           = @type || "Ошибка"
     .text-right
       = submit_tag "Проверить", class: 'btn btn-info'
+%h1 Логи
+.jumbotron
+  .row
+    .col-xs-12
+      %ul
+        %li= link_to 'Неправильные даты', '/logs/wrong_dates'
+        %li= link_to 'События с ошибками', '/logs/failed_events'
+        %li= link_to 'Мало участников', '/logs/low_members'
+        %li= link_to 'Медленные картинки', '/logs/slow_images'
+        %li= link_to 'События без даты', '/logs/without_dates'
+%h1 Разное
+.jumbotron
+  .row
+    .col-xs-12
+      = link_to "Парсить VK", parse_vk_path, method: :post
+      %br/
+      = EventType.ok? ? "&#x2713 В ключевых словах Типов нет повторений".html_safe : "&times; Ошибка. Ключевые слова в типах имеют повторения.".html_safe
