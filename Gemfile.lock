@@ -382,7 +382,7 @@ DEPENDENCIES
   rails-settings-cached (= 0.4.1)
   rails_db_dump
   rails_view_annotator
-  resque
+  resque (= 1.25.2)
   rest_client
   russian (~> 0.6.0)
   sanitize
