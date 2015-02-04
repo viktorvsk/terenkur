@@ -1,4 +1,4 @@
-host "www.new.terenkur.com"
+host "www.terenkur.com"
 
 # Basic sitemap – you can change the name :site as you wish
 sitemap :site do
