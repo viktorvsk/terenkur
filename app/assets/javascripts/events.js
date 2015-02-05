@@ -32,9 +32,9 @@ $(document).ready(function(){
 
   datepickr.prototype.l10n.months.shorthand = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
   datepickr.prototype.l10n.months.longhand = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
-  datepickr.prototype.l10n.weekdays.shorthand = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
+  datepickr.prototype.l10n.weekdays.shorthand = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
   datepickr.prototype.l10n.weekdays.longhand = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье'];
-
+  datepickr.prototype.l10n.firstDayOfWeek = 1;
   datepickr('#search-date', {
     dateFormat: 'Y-m-d',
     minDate: new Date().getTime() - 1000 * 60 * 60 * 24

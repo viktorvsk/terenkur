@@ -16,6 +16,7 @@ class EventsController < ApplicationController
   end
 
   def search
+    Event.connection.execute("select setseed(0.5)")
     descr                   = City.all.map{ |c| I18n.t("cities.#{c.permalink}.gen") }.join(", ")
     @city = City.find_by_permalink(params[:city]) if params[:city]
     q = {
