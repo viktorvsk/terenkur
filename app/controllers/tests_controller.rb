@@ -28,7 +28,8 @@ class TestsController < ApplicationController
     end
 
     if params[:stop].present?
-      @stop = Event.where("name ILIKE ?", "%#{params[:stop]}%").pluck(:name).join("\n")
+      regexp = params[:stop].split("\n").map(&:strip).map(&:downcase).join("|")
+      @stop_events = Event.where("LOWER(name) ~* ?", " (#{regexp}) ").select(:name, :permalink)
     end
   end
 

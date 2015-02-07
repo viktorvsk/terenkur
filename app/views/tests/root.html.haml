@@ -24,8 +24,10 @@
         %pre#type-result
           = @type || "Ошибка"
         %h3 Непринятые события
-        %pre#type-result
-          = @stop || "Нет"
+        - if @stop_events.present?
+          %ul
+            - @stop_events.each do |event|
+              %li= link_to event.name, event_path(event)
     .text-right
     .text-right
       = submit_tag "Проверить", class: 'btn btn-info'
