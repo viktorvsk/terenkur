@@ -26,6 +26,10 @@ class TestsController < ApplicationController
       end
       @type = Event.new(content: params[:text]).event_type_from_content.try(:name)
     end
+
+    if params[:stop].present?
+      @stop = Event.where("name ILIKE ?", "%#{params[:stop]}%").pluck(:name).join("\n")
+    end
   end
 
 end

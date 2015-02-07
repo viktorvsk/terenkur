@@ -9,6 +9,9 @@
         .form-group
           = label_tag 'Текст'
           = text_area_tag :text, params[:text], class: 'form-control', value: params[:text]
+        .form-group
+          = label_tag 'Стоп слова'
+          = text_area_tag :stop, params[:stop], class: 'form-control', value: params[:stop]
         %br/
       .col-md-8
         %h3 Даты
@@ -20,6 +23,10 @@
         %h3 Тип
         %pre#type-result
           = @type || "Ошибка"
+        %h3 Непринятые события
+        %pre#type-result
+          = @stop || "Нет"
+    .text-right
     .text-right
       = submit_tag "Проверить", class: 'btn btn-info'
 %h1 Логи
