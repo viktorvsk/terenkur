@@ -246,7 +246,9 @@ class Event < ActiveRecord::Base
   def price_from_content
     return unless content.present?
     currencies = %w{грн гр гривен uah руб рубл\. грв грвн ₴ \$ uah грн\. гривень грвн\. грв\. р р\. р рубл. грн. грвн.}.join('|')
-    prices = self.content.mb_chars.downcase.to_s.delete(" ").scan(/(\d+)(?:#{currencies})/).flatten.map(&:to_i).sort
+    text = self.content.mb_chars.downcase.to_s
+    text = text.gsub(/(\d+)\s?+(\d+)/,'\1\2')
+    prices = text.scan(/(\d+)\s?+(?:#{currencies})(?:\s|\n|\r|\r\n|$|\Z)/).flatten.map(&:to_i).sort
     prices.count > 1 ? [prices.first, prices.last] : [prices.first]
   end
 
