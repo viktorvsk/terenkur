@@ -28,8 +28,7 @@ class TestsController < ApplicationController
     end
 
     if params[:stop].present?
-      regexp = params[:stop].split("\n").map{ |word| word.mb_chars.downcase.strip.to_s }.select(&:present?).join("|")
-      @stop_events = Event.where("LOWER(name) ~* ?", "(?:\s?|^|\A)(#{regexp})(?:\s?|$|\Z|\z|\n)").select(:name, :permalink)
+      @stop_events = Event.where("name ~ :r OR content ~ :r", r: Event.stop_words_regexp(params[:stop])).select(:name, :permalink)
     end
   end
 

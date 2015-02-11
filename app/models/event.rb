@@ -242,12 +242,9 @@ class Event < ActiveRecord::Base
 
   ### End of virtual attributes ###
 
-  def self.stop_words
-    Conf['stop_words'].split("\n").map{ |word| word.strip.mb_chars.downcase.to_s }.select(&:present?) if Conf['stop_words']
-  end
-
-  def self.stop_words_regexp
-    Regexp.new "(?:\s?+|^|\A)(#{stop_words.join('|')})(?:\s?+|$|\Z|\z|\n)"
+  def self.stop_words_regexp(words)
+    words = words.split("\n").map{ |w| w.mb_chars.downcase.strip.to_s }.select(&:present?).join('|')
+    "[^[:alpha:]](#{words})[^[:alpha:]]"
   end
 
 
@@ -263,7 +260,8 @@ class Event < ActiveRecord::Base
   def event_type_from_content
     return unless content.present?
     keywords  = EventType.keywords.join('|')
-    results   = content.mb_chars.downcase.to_s.scan(/#{keywords}/)
+    text      = "#{name}\n#{content}"
+    results   = text.mb_chars.downcase.to_s.scan(/#{keywords}/)
     counts    = Hash.new(0)
     results.each { |keyword| counts[keyword] += 1 }
     event_type = counts.max_by{ |k| k[1] }.try(:first)
@@ -312,10 +310,10 @@ class Event < ActiveRecord::Base
       print '+'
       sleep 0.333
     end
-    evs = result.flatten.select(&:present?).uniq{ |e| e['name'] }
-    stop_regexp = Event.stop_words_regexp
-    evs = evs.reject{ |e| e['name'] =~ stop_regexp }
-    ids = evs.map{ |e| e['gid'] }
+    evs   = result.flatten.select(&:present?).uniq{ |e| e['name'] }
+    stop  = Regexp.new(Event.stop_words_regexp(Conf["stop_words"]) )
+    evs   = evs.reject{ |e| e['name'] =~ stop}
+    ids   = evs.map{ |e| e['gid'] }
     result_events = []
     ids.in_groups_of(500, false) do |ids_group|
       i = ids_group.join(',')
