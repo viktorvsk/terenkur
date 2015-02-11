@@ -242,6 +242,14 @@ class Event < ActiveRecord::Base
 
   ### End of virtual attributes ###
 
+  def self.stop_words
+    Conf['stop_words'].split("\n").map{ |word| word.strip.mb_chars.downcase.to_s }.select(&:present?) if Conf['stop_words']
+  end
+
+  def self.stop_words_regexp
+    Regexp.new "(?:\s?+|^|\A)(#{stop_words.join('|')})(?:\s?+|$|\Z|\z|\n)"
+  end
+
 
   def price_from_content
     return unless content.present?
@@ -305,6 +313,8 @@ class Event < ActiveRecord::Base
       sleep 0.333
     end
     evs = result.flatten.select(&:present?).uniq{ |e| e['name'] }
+    stop_regexp = Event.stop_words_regexp
+    evs = evs.reject{ |e| e['name'] =~ stop_regexp }
     ids = evs.map{ |e| e['gid'] }
     result_events = []
     ids.in_groups_of(500, false) do |ids_group|
