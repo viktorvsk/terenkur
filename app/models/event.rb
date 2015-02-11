@@ -312,7 +312,10 @@ class Event < ActiveRecord::Base
     end
     evs   = result.flatten.select(&:present?).uniq{ |e| e['name'] }
     stop  = Regexp.new(Event.stop_words_regexp(Conf["stop_words"]) )
-    evs   = evs.reject{ |e| e['name'] =~ stop}
+    evs   = evs.reject{ |e|
+      e['name'].mb_chars.strip.downcase.to_s =~ stop or
+      e['content'].mb_chars.strip.downcase.to_s =~ stop
+    }
     ids   = evs.map{ |e| e['gid'] }
     result_events = []
     ids.in_groups_of(500, false) do |ids_group|

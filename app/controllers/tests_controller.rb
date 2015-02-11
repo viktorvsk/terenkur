@@ -28,7 +28,7 @@ class TestsController < ApplicationController
     end
 
     if params[:stop].present?
-      @stop_events = Event.where("name ~ :r OR content ~ :r", r: Event.stop_words_regexp(params[:stop])).select(:name, :permalink)
+      @stop_events = Event.where("LOWER(name) ~ :r OR LOWER(content) ~ :r", r: Event.stop_words_regexp(params[:stop])).select(:name, :permalink)
     end
   end
 
