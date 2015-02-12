@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150130222113) do
+ActiveRecord::Schema.define(version: 20150212222743) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,20 +95,12 @@ ActiveRecord::Schema.define(version: 20150130222113) do
   add_index "event_days", ["event_id", "day_id"], name: "index_event_days_on_event_id_and_day_id", unique: true, using: :btree
   add_index "event_days", ["event_id"], name: "index_event_days_on_event_id", using: :btree
 
-  create_table "event_meta_types", force: true do |t|
-    t.string   "name",          default: "", null: false
-    t.integer  "event_type_id",              null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "event_types", force: true do |t|
     t.string   "name",       default: "", null: false
     t.string   "permalink",  default: "", null: false
-    t.string   "keywords",   default: ""
+    t.text     "keywords",   default: ""
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "meta_type"
   end
 
   add_index "event_types", ["keywords"], name: "index_event_types_on_keywords", using: :btree

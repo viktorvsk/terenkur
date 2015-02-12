@@ -10,7 +10,6 @@ ru:
       orders: Заказы
       cities: Города
       event_type: Типы
-      event_meta_type: Мета-типы
       events: События
       users: Участники
       conf: Настройки

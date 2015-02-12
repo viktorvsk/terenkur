@@ -25,10 +25,6 @@ EventType.create([
   { name: 'Мастер-классы', keywords: "мастер-класс\nлекция" }
 ])
 puts "Create default event types"
-EventMetaType.create([
-  {name: 'Утренник', event_type: 'семейный отдых'},
-  {name: 'Ночной клуб', event_type: 'отдых компанией'}
-])
 
 puts "Create defaul event meta types"
 Conf['popup.title']       = 'Регистрируйтесь, у нас круто!'
