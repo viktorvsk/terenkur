@@ -15,6 +15,13 @@ class Api::V1::EventsController < Api::V1::ApiController
         e['images'].map{ |image| url_for(image) } if e['images'].present?
       end
     end
+
+    stop = Regexp.new(Event.stop_words_regexp(Conf["stop_words"]) )
+    params[:events] = params[:events].reject{ |e|
+      e['name'].mb_chars.strip.downcase.to_s =~ stop or
+      e['content'].mb_chars.strip.downcase.to_s =~ stop
+    }
+
     message = Event.create_or_update_from_api(event_params, current_user, initial_count: initial_events_count)
     success!(message)
   end
