@@ -21,7 +21,7 @@ class Api::V1::EventsController < Api::V1::ApiController
       (e['name'].mb_chars.strip.downcase.to_s =~ stop rescue false) or
       (e['content'].mb_chars.strip.downcase.to_s =~ stop rescue false)
     }
-
+    success("Нет событий к добавлению") and return if params[:events].empty?
     message = Event.create_or_update_from_api(event_params, current_user, initial_count: initial_events_count)
     success!(message)
   end
