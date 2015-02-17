@@ -4,6 +4,7 @@ class Event < ActiveRecord::Base
   scope :real,    -> { joins(:days, :city, :event_type) }
   scope :today,   -> { where(days: {name: Date.today}) }
   scope :actual,  -> { where('days.name >= ?',Date.today) }
+  scope :stopped, -> { where("LOWER(name) ~ :r OR LOWER(content) ~ :r", r: Event.stop_words_regexp(Conf["stop_words"])) }
   belongs_to :user
   belongs_to :event_type
   belongs_to :city
@@ -13,11 +14,148 @@ class Event < ActiveRecord::Base
   has_many :images, as: :imageable, dependent: :destroy
   validates :name, presence: true, uniqueness: true
   validates :user, :teaser, :event_type, presence: true
-  #validates :days, presence: true, allow_nil: true
   validates_numericality_of :min_price, presence: true, allow_nil: true
   validates_numericality_of :max_price, :greater_than_or_equal_to => :min_price, allow_nil: true, :unless => Proc.new {|event| event.min_price.nil? }
 
   accepts_nested_attributes_for :images, allow_destroy: true, reject_if: :all_blank
+
+  class << self
+    def create_or_update_from_api(events, owner,  opts={})
+      init_count = opts[:initial_count]
+
+      if events.present?
+        events_to_create  = []
+        updated_events    = []
+        transaction do
+          events.each do |e|
+            if event = Event.where(name: e['name']).first
+              if event.user == owner
+                e.delete('image')
+                e.delete('images')
+                e.delete(:images)
+                e.delete(:image)
+                event.event_type  = '' unless event.event_type.present?
+                event.price       = '' unless event.price.present?
+                event.city        = '' unless event.city.present?
+                begin
+                  updated_events << event if event.update(e)
+                rescue ActiveRecord::RecordInvalid => ex
+                  FailedEventsLogger.error("Событие #{event.name} не обновлено: #{ex.class}: #{ex.message}")
+                end
+              else
+                FailedEventsLogger.error("Попытка обновить чужое событие: #{event.name} от имени #{owner.email}")
+              end
+              next
+            else
+              begin
+                event = owner.events.new(e)
+              rescue ActiveRecord::RecordInvalid => ex
+                FailedEventsLogger.error("#{ex.class}: #{ex.message} для #{e['name']}")
+                next
+              end
+              event.event_type  = '' unless event.event_type.present?
+              event.price       = '' unless event.price.present?
+              event.city        = '' unless event.city.present?
+              events_to_create << event
+            end
+          end
+
+          events_to_create.map!(&:save_from_api!)
+        end
+
+        successfully_created_events = events_to_create.select{ |e| e }.count
+        successfully_updated_events = updated_events.count
+        not_processed_events_count  = init_count - successfully_created_events - successfully_updated_events
+
+        "Из #{init_count} переданных событий #{successfully_created_events} были созданы, #{successfully_updated_events} обновлены. Не обработано #{not_processed_events_count} событий."
+      else
+        "Получено #{initial_events_count} событий. Ни одного не добавлено."
+      end
+
+    end
+
+    def vk_to_events(events, city)
+      events.map do |event|
+        s = Time.at(event['start_date'].to_i).to_date.strftime("%d %b %Y")
+        e = Time.at(event['finish_date'].to_i).to_date.strftime("%d %b %Y")
+        date = "#{s} - #{e}"
+        r = {
+             "name"          => event['name'],
+             "content"       => event['description'],
+             "date"          => date,
+             "image"         => event['photo_big'],
+             "teaser"        => event['description'],
+             "city"          => city.name,
+             "event_type"    => event['event_type']
+            }
+        r['address'] = event['place']['address'] if event['place'].present?
+        r
+      end
+    end
+
+    def from_vk_events_list_by_words(words, city_id)
+      result  = []
+      words.each do |word|
+        url = "https://api.vk.com/method/groups.search?q=#{word}&access_token=#{Conf['vk.token']}&count=1000&future=1&city_id=#{city_id}&type=event"
+        url = URI.encode(url)
+        begin
+          response = RestClient.get(url)
+        rescue RestClient
+          print '-'
+          next
+        end
+        begin
+          response_json_events = JSON.parse(response)['response'][1..-1]
+        rescue NoMethodError
+          print '-'
+          next
+        end
+        response_json_events.map!{ |e| e['event_type'] = word; e }
+        result << response_json_events
+        print '+'
+        sleep 0.333
+      end
+
+      result.flatten.uniq{ |e| e['name'] }.select(&:present?)
+    end
+
+    def from_vk_by_ids(evs, ids)
+      result_events = []
+      ids.in_groups_of(500, false) do |ids_group|
+        i = ids_group.join(',')
+        resp = RestClient.post("https://api.vk.com/method/groups.getById",
+          group_ids: i,
+          fields: 'place,description,members_count,start_date,finish_date')
+        begin
+          result_events << JSON.parse(resp)['response']
+        rescue NoMethodError
+          print '-'
+          next
+        end
+        print '+'
+        sleep 0.333
+      end
+      result_events.flatten!
+      result_events.reject!{ |e| e['members_count'].to_i < 25 }
+      result_events.map do |e|
+        e['event_type'] = evs.detect{ |ev| ev['gid'] == e['gid'] }['event_type']
+        e
+      end
+
+      result_events
+    end
+
+    def from_vk_by_words(words, city_id)
+      evs = Event.from_vk_events_list_by_words(words, city_id)
+      ids = evs.map{ |e| e['gid'] }
+      Event.from_vk_by_ids(evs, ids)
+    end
+
+    def stopped?(*args)
+      text = args.join("\n").mb_chars.downcase.to_s
+      !!(text =~ Regexp.new(Event.stop_words_regexp(Conf["stop_words"]) ))
+    end
+  end
 
   def to_param
     permalink
@@ -58,61 +196,7 @@ class Event < ActiveRecord::Base
 
   end
 
-  def self.create_or_update_from_api(events, owner,  opts={})
-    init_count = opts[:initial_count]
-    if events.present?
-      events_to_create = []
-      updated_events = []
 
-      transaction do
-
-        events.each do |e|
-          if event = Event.where(name: e['name']).first
-            if event.user == owner
-              #event.images.destroy_all
-              e.delete('image')
-              e.delete('images')
-              e.delete(:images)
-              e.delete(:image)
-              event.event_type  = '' unless event.event_type.present?
-              event.price       = '' unless event.price.present?
-              event.city        = '' unless event.city.present?
-              begin
-                updated_events << event if event.update(e)
-              rescue ActiveRecord::RecordInvalid => ex
-                FailedEventsLogger.error("Событие #{event.name} не обновлено: #{ex.class}: #{ex.message}")
-              end
-            else
-              FailedEventsLogger.error("Попытка обновить чужое событие: #{event.name} от имени #{owner.email}")
-            end
-            next
-          else
-            begin
-              event = owner.events.new(e)
-            rescue ActiveRecord::RecordInvalid => ex
-              FailedEventsLogger.error("#{ex.class}: #{ex.message} для #{e['name']}")
-              next
-            end
-            event.event_type  = '' unless event.event_type.present?
-            event.price       = '' unless event.price.present?
-            event.city        = '' unless event.city.present?
-            events_to_create << event
-          end
-        end
-
-        events_to_create.map!(&:save_from_api!)
-      end
-
-      successfully_created_events = events_to_create.select{ |e| e }.count
-      successfully_updated_events = updated_events.count
-      not_processed_events_count  = init_count - successfully_created_events - successfully_updated_events
-
-      "Из #{init_count} переданных событий #{successfully_created_events} были созданы, #{successfully_updated_events} обновлены. Не обработано #{not_processed_events_count} событий."
-    else
-      "Получено #{initial_events_count} событий. Ни одного не добавлено."
-    end
-
-  end
 
   ### End API ###
 
@@ -247,7 +331,6 @@ class Event < ActiveRecord::Base
     "[^[:alpha:]](#{words})[^[:alpha:]]"
   end
 
-
   def price_from_content
     return unless content.present?
     currencies = %w{грн гр гривен uah руб рубл\. грв грвн ₴ \$ uah грн\. гривень грвн\. грв\. р р\. р рубл. грн. грвн.}.join('|')
@@ -268,83 +351,5 @@ class Event < ActiveRecord::Base
     return unless event_type
     EventType.where('keywords LIKE ?', "%#{event_type}%").first
   end
-
-  def self.vk_to_events(events, city)
-    events.map do |event|
-      s = Time.at(event['start_date'].to_i).to_date.strftime("%d %b %Y")
-      e = Time.at(event['finish_date'].to_i).to_date.strftime("%d %b %Y")
-      date = "#{s} - #{e}"
-      r = {
-           "name"          => event['name'],
-           "content"       => event['description'],
-           "date"          => date,
-           "image"         => event['photo_big'],
-           "teaser"        => event['description'],
-           "city"          => city.name,
-           "event_type"    => event['event_type']
-          }
-      r['address'] = event['place']['address'] if event['place'].present?
-      r
-    end
-  end
-
-  def self.from_vk_by_words(words, city_id)
-    result  = []
-    words.each do |word|
-      url = "https://api.vk.com/method/groups.search?q=#{word}&access_token=#{Conf['vk.token']}&count=1000&future=1&city_id=#{city_id}&type=event"
-      url = URI.encode(url)
-      begin
-        response = RestClient.get(url)
-      rescue RestClient
-        print '-'
-        next
-      end
-      begin
-        response_json_events = JSON.parse(response)['response'][1..-1]
-      rescue NoMethodError
-        print '-'
-        next
-      end
-      response_json_events.map!{ |e| e['event_type'] = word; e }
-      result << response_json_events
-      print '+'
-      sleep 0.333
-    end
-    evs   = result.flatten.select(&:present?).uniq{ |e| e['name'] }
-    stop  = Regexp.new(Event.stop_words_regexp(Conf["stop_words"]) )
-    evs   = evs.reject{ |e|
-      (e['name'].mb_chars.strip.downcase.to_s =~ stop rescue false) or
-      (e['content'].mb_chars.strip.downcase.to_s =~ stop rescue false)
-    }
-
-
-
-
-    ids   = evs.map{ |e| e['gid'] }
-    result_events = []
-    ids.in_groups_of(500, false) do |ids_group|
-      i = ids_group.join(',')
-      resp = RestClient.post("https://api.vk.com/method/groups.getById",
-        group_ids: i,
-        fields: 'place,description,members_count,start_date,finish_date')
-      begin
-        result_events << JSON.parse(resp)['response']
-      rescue NoMethodError
-        print '-'
-        next
-      end
-      print '+'
-      sleep 0.333
-    end
-    result_events.flatten!
-    result_events.reject!{ |e| e['members_count'].to_i < 25 }
-    result_events.map do |e|
-      e['event_type'] = evs.detect{ |ev| ev['gid'] == e['gid'] }['event_type']
-      e
-    end
-
-    result_events
-  end
-
 
 end

@@ -14,9 +14,12 @@ class City < ActiveRecord::Base
     return "Для города #{self.name} парсинг не проработан" unless city_id
     token   = Conf['vk.token']
     words   = Conf['vk.words'].split("\n") + EventType.keywords
-    words << self.name
+    words   << self.name
     evs     = Event.from_vk_by_words(words, city_id)
     evs     = Event.vk_to_events(evs, self)
+    evs     = evs.select{ |e|
+      not Event.stopped?(e['name'], e['content'])
+    }
     Event.create_or_update_from_api(evs, User.first, initial_count: evs.count)
   end
 
