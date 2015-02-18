@@ -2,7 +2,7 @@
 
   def create
     error!(6) and return if params[:groups].present? and params[:events].present?
-    @events = prepare_events(params[:events])
+    @events = prepare_events_params
     success!("Нет событий к добавлению") and return if @events.empty?
     message = Event.create_or_update_from_api(event_params, current_user, initial_count: @initial_events_count)
     success!(message)
@@ -10,7 +10,7 @@
 
   private
   def event_params
-    @events.require(:events).map do |p|
+    @events.map do |p|
      ActionController::Parameters.new(p.to_hash).permit(:teaser, :price, :date, :permalink, :address, :content, :city, :event_type, :name, :image, images: [])
     end
   end
@@ -28,14 +28,18 @@
     end
   end
 
-  def group_to_events_for(events_group)
+  def group_to_events_for(events_groups)
     result = []
-    events_group.map{ |group| result << group[:events] if group['events'].present? }
+    events_groups.map{ |group| result << group[:events] if group['events'].present? }
     result.flatten
   end
 
-  def prepare_events(events)
-    events = group_to_events_for(events) if params[:groups].present?
+  def prepare_events_params
+    events = if params[:groups].present?
+       group_to_events_for(params[:groups])
+    else
+      params[:events]
+    end
     @initial_events_count = events.try(:count)
     events = [events] if events.kind_of?(Hash)
     events.reject!{ |e| Event.stopped?(e['name'], e['content']) }
