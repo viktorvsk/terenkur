@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class Event < ActiveRecord::Base
   acts_as_commentable
   include Permalinkable
@@ -138,7 +140,8 @@ class Event < ActiveRecord::Base
       result_events.flatten!
       result_events.reject!{ |e| e['members_count'].to_i < 25 }
       result_events.map do |e|
-        e['event_type'] = evs.detect{ |ev| ev['gid'] == e['gid'] }['event_type']
+        _event = evs.detect{ |ev| ev['gid'] == e['gid'] }
+        e['event_type'] = _event.try(:fetch, 'event_type') || ''
         e
       end
 
@@ -148,6 +151,17 @@ class Event < ActiveRecord::Base
     def from_vk_by_words(words, city_id)
       evs = Event.from_vk_events_list_by_words(words, city_id)
       ids = evs.map{ |e| e['gid'] }
+      ### HACK FROM VKEVENT.RU
+      url = "http://vkevent.ru/get_items_upcoming.php/?offset=5000&city_id=#{city_id}"
+      html = open(url).read.force_encoding('UTF-8')
+      doc = Nokogiri::HTML(html)
+      vk_event_ids = doc.css('.event_item')
+                        .map { |node| node.at_css('.info_title a')['href'].gsub(/\D+/, '') }
+
+      ids << vk_event_ids
+      puts ',' * vk_event_ids.count
+      ids.flatten!
+      ###
       Event.from_vk_by_ids(evs, ids)
     end
 
