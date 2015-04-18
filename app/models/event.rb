@@ -3,6 +3,7 @@ require 'open-uri'
 class Event < ActiveRecord::Base
   acts_as_commentable
   include Permalinkable
+  scope :announ,  -> { where(announce: true) }
   scope :real,    -> { joins(:days, :city, :event_type) }
   scope :today,   -> { where(days: {name: Date.today}) }
   scope :actual,  -> { where('days.name >= ?',Date.today) }
@@ -22,6 +23,20 @@ class Event < ActiveRecord::Base
   accepts_nested_attributes_for :images, allow_destroy: true, reject_if: :all_blank
 
   class << self
+
+    def weekly(offs=0)
+      start = Date.today + offs
+      ransack(days_name_gteq: start.to_s(:db), days_name_lteq: start.end_of_week.to_s(:db))
+        .result(distinct: true)
+    end
+
+    def announcements(offs=0)
+      announ
+        .joins(:days)
+        .includes(:days)
+        .weekly(offs)
+    end
+
     def create_or_update_from_api(events, owner,  opts={})
       init_count = opts[:initial_count]
 

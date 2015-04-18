@@ -1,0 +1,13 @@
+!!!
+%head
+  %title Анонс на неделю
+  %meta{ charset: 'utf-8' }
+  = csrf_meta_tags
+  = favicon_link_tag '/favicon.png'
+  = stylesheet_link_tag 'application', media: 'all'
+%body
+  .container
+    .row
+      .col-xs-12
+        = yield
+  = javascript_include_tag 'application'

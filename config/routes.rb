@@ -40,6 +40,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :announcements, only: [:index]
+
   get :tests, to: 'tests#root', as: :tests
 
   get '/(:city)/(:date)/(:type)', to: 'events#search', constraints: search_constraints, as: :search

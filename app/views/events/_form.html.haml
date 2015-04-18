@@ -8,7 +8,10 @@
             %ul
               - @event.errors.full_messages.each do |msg|
                 %li= msg
-
+        - if current_user.admin?
+          .form-group
+            = f.check_box :announce
+            = f.label :announce, 'В анонсе'
         .form-group
           = f.label :name
           = f.text_field :name, class: 'form-control', required: true

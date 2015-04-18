@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150212222743) do
+ActiveRecord::Schema.define(version: 20150418220402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,8 +120,10 @@ ActiveRecord::Schema.define(version: 20150212222743) do
     t.integer  "max_price"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "announce"
   end
 
+  add_index "events", ["announce"], name: "index_events_on_announce", using: :btree
   add_index "events", ["city_id"], name: "index_events_on_city_id", using: :btree
   add_index "events", ["event_type_id"], name: "index_events_on_event_type_id", using: :btree
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
