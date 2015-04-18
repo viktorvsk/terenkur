@@ -3,7 +3,7 @@ lock '3.2.1'
 
 # repo vars
 set :scm,               :git
-set :repo_url,          'git@bitbucket.org:victorvsk/terenkur.git'
+set :repo_url,          'git@bitbucket.org:ablebeam/terenkur.git'
 set :branch,            'master'
 set :rbenv_type,        :user
 set :rbenv_ruby,        '2.2.0'
