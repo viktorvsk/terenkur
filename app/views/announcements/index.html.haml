@@ -1,4 +1,4 @@
-- (Date.today..Date.today.end_of_week).each do |d|
+- ((Date.today+2)..(Date.today+2).end_of_week).each do |d|
   - events = @events.select{ |e| e.days.map(&:name).include? d.to_s(:db) }
   %h3= d.to_s(:db)
   .row

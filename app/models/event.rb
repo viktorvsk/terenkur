@@ -24,13 +24,13 @@ class Event < ActiveRecord::Base
 
   class << self
 
-    def weekly(offs=0)
+    def weekly(offs=1)
       start = Date.today + offs
       ransack(days_name_gteq: start.to_s(:db), days_name_lteq: start.end_of_week.to_s(:db))
         .result(distinct: true)
     end
 
-    def announcements(offs=0)
+    def announcements(offs=1)
       announ
         .joins(:days)
         .includes(:days)
