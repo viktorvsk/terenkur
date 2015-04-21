@@ -2,7 +2,7 @@
 %head
   %title= announcements_title(@city, @event_type, (Date.today + @offs * 7))
   %meta{ charset: 'utf-8' }
-  %meta{ 'http-equiv' =>"viewport", content: "width=device-width, initial-scale=1" }
+  %meta{ name: =>"viewport", content: "width=device-width, initial-scale=1" }
   = csrf_meta_tags
   = favicon_link_tag '/favicon.png'
   = stylesheet_link_tag 'application', media: 'all'
