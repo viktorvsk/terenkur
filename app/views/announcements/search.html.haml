@@ -1,11 +1,5 @@
 %h4.text-center
-  - start = Date.today + @offs * 7
-  = @event_type.name
-  = t("cities.#{@city.permalink}.gen")
-  с
-  = I18n.localize(start, format: "%e %B")
-  по
-  = I18n.localize(start.end_of_week, format: "%e %B")
+  = announcements_title(@city, @event_type, (Date.today + @offs * 7))
 
 - @events.each do |day, events|
   %h3.text-center= I18n.localize(Date.parse(day), format: "%e %B")

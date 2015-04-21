@@ -17,4 +17,15 @@ module ApplicationHelper
     options['data-original'] = source
     image_tag('/spinner.gif', options)
   end
+
+  def announcements_title(city, event_type, date)
+    [
+      @event_type.name,
+      t("cities.#{city.permalink}.gen"),
+      'с',
+      I18n.localize(date, format: "%e %B"),
+      'по',
+      I18n.localize(date.end_of_week, format: "%e %B")
+    ].join(' ')
+  end
 end
