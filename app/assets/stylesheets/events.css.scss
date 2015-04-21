@@ -2,7 +2,16 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.datepickr-wrapper{
+li a.hot{
+  background: #f1c40f;
+  color: #e74c3c!important;
+  font-weight: 800;
+  &:hover{
+    background: #e67e22!important;
+    color: #fff!important;
+  }
+}
+.dateepickr-wrapper{
   width: 100%;
 }
 input:not(#name), select{
