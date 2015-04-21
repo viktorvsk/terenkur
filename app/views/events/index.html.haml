@@ -1,7 +1,7 @@
 - content_for :top_background_content do render 'events_search' end
 - content_for :title do "Все события в твоем городе" end
 
-- if Conf['welcome.header'] and Conf['welcome.message']
+- false && if Conf['welcome.header'] and Conf['welcome.message']
   %article
     %header
       %h1= Conf['welcome.header']

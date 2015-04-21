@@ -26,7 +26,7 @@ Rails.application.routes.draw do
 
   mount Ckeditor::Engine => '/ckeditor'
   devise_for :users, :controllers => { :omniauth_callbacks => "omniauth_callbacks" }
-  root 'events#index'
+  root 'announcements#search'
   post :register_and_order, to: 'events#register_and_order'
   resources :users, except: [:create, :destroy] do
     get :orders, on: :member
