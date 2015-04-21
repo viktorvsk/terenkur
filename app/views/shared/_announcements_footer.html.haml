@@ -1,0 +1,32 @@
+.jumbotron.footer
+  .container
+    .row
+      .col-md-4.col-md-offset-8
+        = link_to omniauth_authorize_path(:user, :vkontakte) do
+          = image_tag("vkontakte.png", size: '16x16')
+          Войти
+        &nbsp;
+        &nbsp;
+        = link_to 'Добавить событие', new_event_path
+    .row
+      .col-md-4
+        %h3 Terenkur
+        %ul
+          %li= link_to t('site'), root_path
+          %li= link_to t('menu.about'), page_path(:about)
+          %li= link_to t('menu.partners'), page_path(:partners)
+
+      .col-md-4
+        %h3 Тематика
+        %ul
+          - EventType.find_each do |event_type|
+            %li= link_to event_type.name, search_path(type: event_type.permalink)
+
+      .col-md-4
+        %h3 Город
+        %ul
+          - City.find_each do |city|
+            %li= link_to %{Все события #{t("cities.#{city.permalink}.gen")} }, search_path(city: city.permalink)
+    .row
+      .col-xs-12
+        &copy; Terenkur

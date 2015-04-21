@@ -1,0 +1,22 @@
+.carousel.slide{ id: "events-for-#{day}", 'data-ride' => 'carousel', 'data-interval' => 'false' }
+
+  .carousel-inner
+    - events.in_groups_of(5, false).each_with_index do |events_group, index|
+      .item{ class: ('active' if index == 0) }
+        - events_group.each_with_index do |event, ind|
+          .col-md-2.item{ class: ('col-md-offset-1' if ind == 0) }
+            .event
+              .image
+                = link_to event_path(event) do
+                  = image_tag event.images.first.try(:attachment), class: 'img-responsive img-circle'
+              .name
+                = link_to event.name, event_path(event)
+              .description
+                = event.text_teaser
+                .text-center
+                  = link_to 'Подробнее', event_path(event), class: 'btn btn-success btn-xs'
+  - if events.size > 5
+    %ol.carousel-indicators
+      - (events.size / 5.0).ceil.times do |i|
+
+        %li{ 'data-target' => "#events-for-#{day}", 'data-slide-to' => i, class: ('active' if i == 0) }

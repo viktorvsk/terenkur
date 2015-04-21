@@ -25,10 +25,19 @@ class Event < ActiveRecord::Base
   class << self
 
     def weekly(offs=0)
-      start = Date.today + offs
-      ransack(days_name_gteq: start.to_s(:db), days_name_lteq: start.end_of_week.to_s(:db))
+      events_by_day = {}
+      start = Date.today + offs * 7
+      period = start..start.end_of_week
+      events = ransack(days_name_gteq: start.to_s(:db), days_name_lteq: start.end_of_week.to_s(:db))
         .result(distinct: true)
+      period.map do |day|
+        events_by_day[day.to_s(:db)] = events.select{ |e| e.days.map(&:name).include? day.to_s(:db) }
+      end
+
+      events_by_day
     end
+
+
 
     def announcements(offs=0)
       announ

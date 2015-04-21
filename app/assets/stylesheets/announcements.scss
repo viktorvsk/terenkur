@@ -1,0 +1,134 @@
+.announcements{
+  h1{
+    font-size: 36px;
+  }
+  .btn{
+    text-transform: none;
+  }
+  font-family: Sans, Arial;
+  .jumbotron{
+    &.header{
+      background: image-url('announce.jpg') no-repeat center top;
+      background-position: 100% -200px;
+    }
+    background: #111;
+    color: #ECF0F1;
+    [type="submit"]{
+      background: #fff;
+      color: #333;
+      border-radius: 12px;
+    }
+    a{
+      color: #ECF0F1;
+      text-decoration: none;
+    }
+
+    ul{
+      list-style: none;
+      padding: 0;
+    }
+  }
+  .select{
+    position: relative;
+    select{
+      width: 100%;
+      background:transparent;
+      border: #fff solid 1px;
+      padding: 5px;
+      color: #fff;
+      cursor: pointer;
+    }
+    option{
+      color: #333;
+      background: #fff;
+      padding: 3px;
+    }
+    i{
+      position: absolute;
+      font-size: 2em;
+      right: 2px;
+      top: 3px;
+      pointer-events: none;
+      filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='your_transparent.png', sizingMethod='scale');
+      background: none !important;
+
+    }
+  }
+
+  .event{
+    position: relative;
+    border: #2ECC71 solid 1px;
+    padding: 1em;
+    height: 240px;
+    margin-bottom: 2em;
+    border-radius: 3px;
+
+    &:hover .description{
+     opacity: 1;
+    }
+    .image{
+      width: 100%;
+      height: 100px;
+      max-height: 100px;
+    }
+    img{
+      display: block;
+      margin: auto;
+      width: 100px;
+      height: 100px;
+      max-height: 100px;
+      box-shadow: 1px 2px 3px #aaa;
+    }
+    .name{
+      text-align: center;
+      height: 140px;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      a{
+        color: #333;
+      }
+
+    }
+    .description{
+      -webkit-transition: opacity 2s 0.2s; /* Safari */
+      transition: opacity 0.2s;
+      position: absolute;
+      border-radius: 3px;
+      font-size: 90%;
+      opacity: 0;
+      top: 0;
+      left: 0;
+      background: #fff;
+      padding: 1em;
+      height: 238px;
+      width: 100%;
+      overflow: hidden;
+
+
+      .btn{
+        background: #333;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 11px;
+
+      }
+    }
+  }
+
+  .footer{
+    margin: 2em 0 0 0 ;
+  }
+
+  .carousel-indicators{
+    bottom: -15px;
+    display: block;
+    li{
+      background: #2ECC71;
+      border: none;
+    }
+    li.active{
+      background: #333;
+    }
+  }
+}

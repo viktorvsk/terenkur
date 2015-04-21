@@ -40,7 +40,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :announcements, only: [:index]
+  post '/announcements', to: 'announcements#redirect_search'
+  get '/announcements/(:city)/(:event_type)/(:week)', to: 'announcements#search', as: :search_announcements
+
 
   get :tests, to: 'tests#root', as: :tests
 

@@ -1,0 +1,31 @@
+.jumbotron.header
+  .container
+    .row
+      .col-md-3.col-md-offset-2
+        = link_to image_tag('logo.png', class: 'logo'), root_path
+      .col-md-3.col-md-offset-2.text-right
+        = link_to omniauth_authorize_path(:user, :vkontakte) do
+          = image_tag("vkontakte.png", size: '16x16')
+          Войти
+        &nbsp;
+        &nbsp;
+        = link_to 'Добавить событие', new_event_path
+      .col-xs-12
+        %h1.text-center
+          Получайте рекомендации самых интересных событий города
+    .row
+      = form_tag '/announcements', method: :post do |f|
+        .col-md-2.col-md-offset-3
+          .select
+            %i.mdi-hardware-keyboard-arrow-down
+            = select_tag :city, options_for_select( *@cities_select )
+        .col-md-2
+          .select
+            = select_tag :event_type, options_for_select( *@event_types_select )
+            %i.mdi-hardware-keyboard-arrow-down
+        .col-md-2
+          .select
+            = select_tag :week, options_for_select( *@week_select )
+            %i.mdi-hardware-keyboard-arrow-down
+        .col-xs-12.text-center
+          = submit_tag 'Посмотреть анонс', class: 'btn btn-primary'

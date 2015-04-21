@@ -5,9 +5,11 @@
   = csrf_meta_tags
   = favicon_link_tag '/favicon.png'
   = stylesheet_link_tag 'application', media: 'all'
-%body
+%body.announcements
+  = render 'shared/announcements_header'
   .container
     .row
       .col-xs-12
         = yield
+  = render 'shared/announcements_footer'
   = javascript_include_tag 'application'
