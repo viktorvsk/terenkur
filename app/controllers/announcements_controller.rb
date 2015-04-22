@@ -7,7 +7,7 @@ class AnnouncementsController < ApplicationController
 
   def search
     params[:city] ||= City.first.permalink
-    params[:event_type] ||= EventType.first.permalink
+    params[:event_type] ||= EventType.joins(:events).select('event_types.*').group('event_types.id').order('count(events.event_type_id) DESC').first.permalink
     params[:week] ||= 'this_week'
     @offs = params[:week] == 'next_week' ? 1 : 0
 
