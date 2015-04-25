@@ -6,7 +6,7 @@ set :scm,               :git
 set :repo_url,          'git@bitbucket.org:ablebeam/terenkur.git'
 set :branch,            'master'
 set :rbenv_type,        :user
-set :rbenv_ruby,        '2.2.0'
+set :rbenv_ruby,        '2.2.2'
 set :rbenv_map_bins,    %w{rake gem bundle ruby rails}
 set :rbenv_roles,       :all
 set :user,              'vvsk'

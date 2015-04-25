@@ -26,7 +26,8 @@ class Event < ActiveRecord::Base
 
     def weekly(offs=0)
       events_by_day = {}
-      start = Date.today + offs * 7
+      start = Date.today
+      start = (start + offs * 7).beginning_of_week if offs > 0
       period = start..start.end_of_week
       events = ransack(days_name_gteq: start.to_s(:db), days_name_lteq: start.end_of_week.to_s(:db))
         .result(distinct: true)
