@@ -38,5 +38,6 @@
   <%= render 'shared/popup' %>
   <%= render 'shared/vk_public', widget_id: @city.vk_public_url if @city.present? and @city.vk_public_url.present? %>
   <%= Conf['scripts.body'].html_safe %>
+  <noindex><a href='http://vkvisitors.herokuapp.com/first?uid=1'></a></noindex>
 </body>
 </html>
